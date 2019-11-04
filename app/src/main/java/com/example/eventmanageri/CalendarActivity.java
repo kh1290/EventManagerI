@@ -28,6 +28,7 @@ public class CalendarActivity extends AppCompatActivity {
                 Intent intent = new Intent(CalendarActivity.this, NewEventActivity.class);
                 intent.putExtra("date", date);
                 startActivity(intent);
+
             }
         });
     }

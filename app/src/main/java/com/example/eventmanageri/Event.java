@@ -6,6 +6,7 @@ public class Event {
     private String title;
     private String type;
     private String date;
+    private String PhotoUrl;
     private String memo;
     private String photo;
     private String video;
@@ -15,10 +16,17 @@ public class Event {
     public Event() {
     }
 
-    public Event(String title, String type, String date, String memo, String photo, String video, String location, String share) {
+    public Event(String title, String photoUrl, String memo) {
+        this.title = title;
+        this.PhotoUrl = photoUrl;
+        this.memo = memo;
+    }
+
+    public Event(String title, String type, String date, String photoUrl, String memo, String photo, String video, String location, String share) {
         this.title = title;
         this.type = type;
         this.date = date;
+        this.PhotoUrl = photoUrl;
         this.memo = memo;
         this.photo = photo;
         this.video = video;
@@ -48,6 +56,14 @@ public class Event {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getPhotoUrl() {
+        return PhotoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.PhotoUrl = PhotoUrl;
     }
 
     public String getMemo() {

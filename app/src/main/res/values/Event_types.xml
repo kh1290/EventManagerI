@@ -2,6 +2,7 @@
 <resources>
     <string-array name="event_types">
         <item>Party</item>
+        <item>Sports</item>
         <item>Concert</item>
         <item>Travel</item>
         <item>Study</item>

@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import java.util.List;
 import android.content.Intent;
+import com.squareup.picasso.Picasso;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class RecyclerView_Config {
     private Context mContext;
     private EventsAdapter mEventsAdapter;
+
     public void setConfig(RecyclerView recyclerView, Context context, List<Event> events, List<String> keys) {
         mContext = context;
         mEventsAdapter = new EventsAdapter(events, keys);
@@ -48,6 +50,7 @@ public class RecyclerView_Config {
             mShare = (TextView) itemView.findViewById(R.id.Share_textView);
 
             // Update Event
+            /*
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -66,6 +69,8 @@ public class RecyclerView_Config {
                     mContext.startActivity(intent);
                 }
             });
+
+             */
         }
 
         // List event items (for EventListActivity)
@@ -100,7 +105,7 @@ public class RecyclerView_Config {
         @Override
         public void onBindViewHolder(@NonNull EventItemView holder, int position) {
             holder.bind(mEventList.get(position), mKeys.get(position));
-
+            // picasso
         }
 
         @Override

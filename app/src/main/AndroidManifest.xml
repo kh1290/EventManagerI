@@ -11,6 +11,11 @@
         android:theme="@style/AppTheme">
         <activity android:name=".SignUpActivity"></activity>
         <activity android:name=".HomeActivity" />
+        <activity android:name=".EventListActivity" />
+        <activity android:name=".EventModActivity" />
+        <activity android:name=".EventViewActivity" />
+        <activity android:name=".NewEventActivity" />
+        <activity android:name=".CalendarActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

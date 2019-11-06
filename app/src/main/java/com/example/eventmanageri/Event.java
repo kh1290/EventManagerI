@@ -16,12 +16,6 @@ public class Event {
     public Event() {
     }
 
-    public Event(String title, String photoUrl, String memo) {
-        this.title = title;
-        this.PhotoUrl = photoUrl;
-        this.memo = memo;
-    }
-
     public Event(String title, String type, String date, String photoUrl, String memo, String photo, String video, String location, String share) {
         this.title = title;
         this.type = type;

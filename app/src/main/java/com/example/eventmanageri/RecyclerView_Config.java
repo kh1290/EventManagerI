@@ -32,6 +32,7 @@ public class RecyclerView_Config {
         private TextView mMemo;
         private TextView mPhoto;
         private TextView mVideo;
+        private TextView mPhotoUrl;
         private TextView mLocation;
         private TextView mShare;
 
@@ -44,6 +45,7 @@ public class RecyclerView_Config {
             mType = (TextView) itemView.findViewById(R.id.type_txtView);
             mDate = (TextView) itemView.findViewById(R.id.date_viewTxt);
             mMemo = (TextView) itemView.findViewById(R.id.memo_txtView);
+            //mPhotoUrl = (TextView) itemView.findViewById(R.id.Photo_txtView);
             mPhoto = (TextView) itemView.findViewById(R.id.Photo_txtView);
             mVideo = (TextView) itemView.findViewById(R.id.Video_txtView);
             mLocation = (TextView) itemView.findViewById(R.id.Location_txtView);

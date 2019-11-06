@@ -9,12 +9,24 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
 
 import java.util.ArrayList;
 
 public class Database {
+    // Firebase Database
     private FirebaseDatabase mDatabase;
-    private DatabaseReference mReferenceEvents;
+    private DatabaseReference mDatabaseRef;
+
+    // Firebase Storage
+    private FirebaseStorage mStorage;
+    private StorageReference mStoragePhotoRef;
+    private StorageReference mStorageVideoRef;
+    private StorageTask mUpPhoto;
+
+    // Events
     private List<Event> events = new ArrayList<>();
 
     public interface DataStatus {
@@ -26,12 +38,16 @@ public class Database {
 
     public Database() {
         mDatabase = FirebaseDatabase.getInstance();
-        mReferenceEvents = mDatabase.getReference("events");
+        mDatabaseRef = mDatabase.getReference("events");
+
+        mStorage = FirebaseStorage.getInstance();
+        mStoragePhotoRef = mStorage.getReference("photo");
+        mStorageVideoRef = mStorage.getReference("video");
     }
 
     // DataIsLoaded
     public void readEvents(final DataStatus dataStatus) {
-        mReferenceEvents.addValueEventListener(new ValueEventListener() {
+        mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 events.clear();
@@ -53,8 +69,8 @@ public class Database {
 
     // DataIsInserted
     public void addEvent(Event event, final DataStatus dataStatus) {
-        String key = mReferenceEvents.push().getKey();
-        mReferenceEvents.child(key).setValue(event).addOnSuccessListener(new OnSuccessListener<Void>() {
+        String key = mDatabaseRef.push().getKey();
+        mDatabaseRef.child(key).setValue(event).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 dataStatus.DataIsInserted();
@@ -64,7 +80,7 @@ public class Database {
 
     // DataIsUpdated
     public void updateEvent(String key, Event event, final DataStatus dataStatus) {
-        mReferenceEvents.child(key).setValue(event)
+        mDatabaseRef.child(key).setValue(event)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -75,7 +91,7 @@ public class Database {
 
     // DataIsDeleted
     public void deleteEvent(String key, final DataStatus dataStatus) {
-        mReferenceEvents.child(key).setValue(null)
+        mDatabaseRef.child(key).setValue(null)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -83,5 +99,4 @@ public class Database {
             }
         });
     }
-
 }

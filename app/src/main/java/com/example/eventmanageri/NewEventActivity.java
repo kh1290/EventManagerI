@@ -219,8 +219,8 @@ public class NewEventActivity extends AppCompatActivity {
                     @Override
                     public void DataIsInserted() {
 
-                        //Toast.makeText(NewEventActivity.this, "The event has been " +
-                        //        "saved successfully", Toast.LENGTH_LONG).show();
+                        Toast.makeText(NewEventActivity.this, "The event has been " +
+                                "saved successfully", Toast.LENGTH_LONG).show();
                     }
 
                     @Override

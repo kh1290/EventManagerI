@@ -9,7 +9,6 @@ import android.content.Intent;
 
 public class CalendarActivity extends AppCompatActivity {
 
-    private static final String TAG = "CalendarActivity";
     private CalendarView mCalendarView;
 
     @Override
@@ -23,12 +22,10 @@ public class CalendarActivity extends AppCompatActivity {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
                 String date = dayOfMonth + "/" + month + "/" + year;
-                Log.d(TAG, "onSelectedDayChange: date " + date);
 
                 Intent intent = new Intent(CalendarActivity.this, NewEventActivity.class);
                 intent.putExtra("date", date);
                 startActivity(intent);
-
             }
         });
     }

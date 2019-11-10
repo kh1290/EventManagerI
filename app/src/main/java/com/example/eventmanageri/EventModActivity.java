@@ -2,47 +2,59 @@ package com.example.eventmanageri;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
 
 public class EventModActivity extends AppCompatActivity {
 
-
-    private EditText mTitle_editTxt;
-    private EditText mMemo_editTxt;
-    private EditText mPhoto_editTxt;
-    private EditText mVideo_editTxt;
-    private EditText mLocation_editTxt;
+    // UI references
+    private EditText mTitle_editTxt, mMemo_editTxt,
+            mPhoto_editTxt, mVideo_editTxt, mLocation_editTxt, mShare_sw;
+    private TextView mDate_viewTxt;
     private Spinner mType_sp;
-    private EditText mShare_sw;
-    private Button mBtnUpdate;
-    private Button mBtnDelete;
-    private Button mBtnCancel;
+    private Button mBtnDate, mBtnUpdate, mBtnDelete, mBtnCancel;
 
-    private String key;
-    private String title;
-    private String memo;
-    private String photo;
-    private String video;
-    private String location;
-    private String share;
-    private String type;
+    // Data references
+    private String key, title, date, memo, type, photo, video, location, share;
 
+    // Choose Date
+    private void chooseDate() {
+        Intent intent = new Intent(EventModActivity.this, CalendarActivity.class);
+        startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_mod);
 
+        // Define UI references
+        mTitle_editTxt = (EditText) findViewById(R.id.title_editTxt);
+        mDate_viewTxt = (TextView) findViewById(R.id.date_viewTxt);
+        mMemo_editTxt = (EditText) findViewById(R.id.memo_editTxt);
+        mPhoto_editTxt = (EditText) findViewById(R.id.photo_editTxt);
+        mVideo_editTxt = (EditText) findViewById(R.id.video_editTxt);
+        mLocation_editTxt = (EditText) findViewById(R.id.location_editTxt);
+        mType_sp = (Spinner) findViewById(R.id.type_sp);
+        mShare_sw = (EditText) findViewById(R.id.share_sw);
+        mBtnDate = (Button) findViewById(R.id.btnDate);
+        mBtnUpdate = (Button) findViewById(R.id.btnUpdate);
+        mBtnDelete = (Button) findViewById(R.id.btnDelete);
+        mBtnCancel = (Button) findViewById(R.id.btnCancel);
+
+        // Get data from EventListActivity
         key = getIntent().getStringExtra("key");
         title = getIntent().getStringExtra("title");
+        date = getIntent().getStringExtra("date");
         memo = getIntent().getStringExtra("memo");
         photo = getIntent().getStringExtra("photo");
         video = getIntent().getStringExtra("video");
@@ -50,31 +62,35 @@ public class EventModActivity extends AppCompatActivity {
         share = getIntent().getStringExtra("share");
         type = getIntent().getStringExtra("type");
 
-        mTitle_editTxt = (EditText) findViewById(R.id.title_editTxt);
+        // Set data to display
         mTitle_editTxt.setText(title);
-        mMemo_editTxt = (EditText) findViewById(R.id.memo_editTxt);
+        mDate_viewTxt.setText(date);
         mMemo_editTxt.setText(memo);
-        mPhoto_editTxt = (EditText) findViewById(R.id.photo_editTxt);
         mPhoto_editTxt.setText(photo);
-        mVideo_editTxt = (EditText) findViewById(R.id.video_editTxt);
         mVideo_editTxt.setText(video);
-        mLocation_editTxt = (EditText) findViewById(R.id.location_editTxt);
         mLocation_editTxt.setText(location);
-        mType_sp = (Spinner) findViewById(R.id.type_sp);
         mType_sp.setSelection(getIndex_SpinnerItem(mType_sp, type));
-
-        mShare_sw = (EditText) findViewById(R.id.share_sw);
         mShare_sw.setText(share);
 
-        mBtnUpdate = (Button) findViewById(R.id.btnUpdate);
-        mBtnDelete = (Button) findViewById(R.id.btnDelete);
-        mBtnCancel = (Button) findViewById(R.id.btnCancel);
 
+        // <------------------------ Button ------------------------>
+        // Choose Event Date : "CHOOSE DATE" Button
+        mBtnDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chooseDate();
+            }
+        });
+
+        // Update Event : "UPDATE" Button
         mBtnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Event event = new Event();
+
+                event.setEventId(key);
                 event.setTitle(mTitle_editTxt.getText().toString());
+                event.setDate(mDate_viewTxt.getText().toString());
                 event.setMemo(mMemo_editTxt.getText().toString());
                 event.setPhoto(mPhoto_editTxt.getText().toString());
                 event.setVideo(mVideo_editTxt.getText().toString());
@@ -97,6 +113,7 @@ public class EventModActivity extends AppCompatActivity {
                     public void DataIsUpdated() {
                         Toast.makeText(EventModActivity.this, "The event has been " +
                                 "updated successfully", Toast.LENGTH_LONG).show();
+                        goToList();
                     }
 
                     @Override
@@ -107,6 +124,7 @@ public class EventModActivity extends AppCompatActivity {
             }
         });
 
+        // Delete Event : "DELETE" Button
         mBtnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -130,16 +148,17 @@ public class EventModActivity extends AppCompatActivity {
                     public void DataIsDeleted() {
                         Toast.makeText(EventModActivity.this, "The event has been " +
                                 "deleted successfully", Toast.LENGTH_LONG).show();
-                        finish(); return;
+                        goToList();
                     }
                 });
             }
         });
 
+        // Cancel : "CANCEL" Button (Back to the event lists)
         mBtnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish(); return;
+                goToList();
             }
         });
     }
@@ -153,5 +172,11 @@ public class EventModActivity extends AppCompatActivity {
             }
         }
         return index;
+    }
+
+    // Go to Event Lists
+    private void goToList() {
+        Intent goToList = new Intent(EventModActivity.this, EventListActivity.class);
+        startActivity(goToList);
     }
 }

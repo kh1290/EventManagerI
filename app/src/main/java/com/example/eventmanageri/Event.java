@@ -3,7 +3,8 @@ package com.example.eventmanageri;
 // Define items
 
 public class Event {
-    private String titlee;
+    private String eventId;
+    private String title;
     private String type;
     private String date;
     private String PhotoUrl;
@@ -16,8 +17,9 @@ public class Event {
     public Event() {
     }
 
-    public Event(String titlee, String type, String date, String photoUrl, String memo, String photo, String video, String location, String share) {
-        this.titlee = titlee;
+    public Event(String eventId, String title, String type, String date, String photoUrl, String memo, String photo, String video, String location, String share) {
+        this.eventId = eventId;
+        this.title = title;
         this.type = type;
         this.date = date;
         this.PhotoUrl = photoUrl;
@@ -28,12 +30,20 @@ public class Event {
         this.share = share;
     }
 
+    public String getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(String eventId) {
+        this.eventId = eventId;
+    }
+
     public String getTitle() {
-        return titlee;
+        return title;
     }
 
     public void setTitle(String title) {
-        this.titlee = title;
+        this.title = title;
     }
 
     public String getType() {

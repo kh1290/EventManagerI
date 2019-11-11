@@ -52,6 +52,7 @@ public class Database {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 events.clear();
                 List<String> keys = new ArrayList<>();
+
                 for(DataSnapshot keyNode : dataSnapshot.getChildren()){
                     keys.add(keyNode.getKey());
                     Event event = keyNode.getValue(Event.class);
@@ -70,6 +71,8 @@ public class Database {
     // DataIsInserted
     public void addEvent(Event event, final DataStatus dataStatus) {
         String key = mDatabaseRef.push().getKey();
+        event.setEventId(key);
+
         mDatabaseRef.child(key).setValue(event).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -82,11 +85,11 @@ public class Database {
     public void updateEvent(String key, Event event, final DataStatus dataStatus) {
         mDatabaseRef.child(key).setValue(event)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                dataStatus.DataIsUpdated();
-            }
-        });
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        dataStatus.DataIsUpdated();
+                    }
+                });
     }
 
     // DataIsDeleted

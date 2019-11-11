@@ -39,7 +39,7 @@ public class HomeActivity extends AppCompatActivity {
         mGoToList_ViewTxt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent GoToList = new Intent(HomeActivity.this, TestActivity.class);
+                Intent GoToList = new Intent(HomeActivity.this, EventListActivity.class);
                 startActivity(GoToList);
             }
         });

@@ -56,7 +56,36 @@
                 android:layout_marginEnd="10dp"
                 android:layout_marginRight="10dp"
                 android:text="Memo" />
+
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/Share_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Share" />
+
+        <TextView
+            android:id="@+id/Location_txtView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Location" />
+
+        <TextView
+            android:id="@+id/Video_txtView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Video" />
+
+        <TextView
+            android:id="@+id/Photo_txtView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Photo" />
     </LinearLayout>
 
 </LinearLayout>

@@ -36,7 +36,7 @@ public class SignUpActivity extends AppCompatActivity {
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String email = username.getText().toString();
+                final String email = username.getText().toString();
                 String pwd = password.getText().toString();
                 if(email.isEmpty()){
                     username.setError("Please enter email ID");
@@ -57,9 +57,18 @@ public class SignUpActivity extends AppCompatActivity {
                                 Toast.makeText(SignUpActivity.this,"SignUp Unsuccessful, Please Try Again",Toast.LENGTH_SHORT).show();
                             }
                             else {
-                                startActivity(new Intent(SignUpActivity.this,MainActivity.class));
-                            }
-                        }
+                                startActivity(new Intent(SignUpActivity.this, MainActivity.class));
+                                User user = new User();
+                                user.setEmail(email);
+
+                                new Database().addUser(user, new Database.UserStatus() {
+                                    @Override
+                                    public void UserIsInserted() {
+                                        Toast.makeText(SignUpActivity.this, "Signed up successfully!", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            };
+                        };
                     });
                 }
                 else{

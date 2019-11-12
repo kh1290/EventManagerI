@@ -16,7 +16,7 @@ public class EventViewActivity extends AppCompatActivity {
             mVideo_viewTxt, mLocation_viewTxt, mType_viewTxt, mShare_sw;
     // private ImageView mPhoto_imgView;
 
-    private String key, eventid, title, date, memo, photo, video, location, share, type;
+    private String key, eventid, userid, title, date, memo, photo, video, location, share, type;
     private Button mBtnUpdate;
 
 
@@ -27,6 +27,7 @@ public class EventViewActivity extends AppCompatActivity {
 
         key = getIntent().getStringExtra("key");
         eventid = getIntent().getStringExtra("eventid");
+        userid = getIntent().getStringExtra("userid");
         title = getIntent().getStringExtra("title");
         date = getIntent().getStringExtra("date");
         memo = getIntent().getStringExtra("memo");
@@ -62,6 +63,7 @@ public class EventViewActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(EventViewActivity.this, EventModActivity.class);
                 intent.putExtra("key",eventid);
+                intent.putExtra("userid",userid);
                 intent.putExtra("title",mTitle_viewTxt.getText().toString());
                 intent.putExtra("type",mType_viewTxt.getText().toString());
                 intent.putExtra("date",mDate_viewTxt.getText().toString());

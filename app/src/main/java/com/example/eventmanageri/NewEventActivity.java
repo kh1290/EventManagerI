@@ -42,9 +42,9 @@ public class NewEventActivity extends AppCompatActivity {
     // Define variables
     private EditText mTitle_editTxt, mMemo_editTxt;
     private ImageView mPhoto_imgView;
-    private EditText mPhoto_editTxt, mVideo_editTxt, mLocation_editTxt, mShare_sw;
+    private EditText mPhoto_editTxt, mVideo_editTxt, mLocation_editTxt;
     private TextView mDate_viewTxt;
-    private Spinner mType_sp;
+    private Spinner mType_sp, mShare_sp;
     private Button mBtnDate, mBtnUpPhoto, mBtnUpVideo, mBtnAdd, mBtnCancel;
 
     // upload photo
@@ -119,7 +119,7 @@ public class NewEventActivity extends AppCompatActivity {
                     event.setVideo(mVideo_editTxt.getText().toString());
                     event.setLocation(mLocation_editTxt.getText().toString());
                     event.setType(mType_sp.getSelectedItem().toString());
-                    event.setShare(mShare_sw.getText().toString());
+                    event.setShare(mShare_sp.getSelectedItem().toString());
 
                     String upId = mDatabaseRef.push().getKey();
                     mDatabaseRef.child(upId).setValue(event);
@@ -148,7 +148,7 @@ public class NewEventActivity extends AppCompatActivity {
         mVideo_editTxt = (EditText) findViewById(R.id.video_editTxt);
         mLocation_editTxt = (EditText) findViewById(R.id.location_editTxt);
         mType_sp = (Spinner) findViewById(R.id.type_sp);
-        mShare_sw = (EditText) findViewById(R.id.share_sw);
+        mShare_sp = (Spinner) findViewById(R.id.share_sp);
         mDate_viewTxt = (TextView) findViewById(R.id.date_viewTxt);
 
         mBtnDate = (Button) findViewById(R.id.btnDate);
@@ -208,7 +208,7 @@ public class NewEventActivity extends AppCompatActivity {
                 event.setVideo(mVideo_editTxt.getText().toString());
                 event.setLocation(mLocation_editTxt.getText().toString());
                 event.setType(mType_sp.getSelectedItem().toString());
-                event.setShare(mShare_sw.getText().toString());
+                event.setShare(mShare_sp.getSelectedItem().toString());
 
                 new Database().addEvent(event, new Database.DataStatus() {
                     @Override

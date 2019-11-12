@@ -6,6 +6,33 @@
     android:layout_height="match_parent"
     tools:context=".NewEventActivity">
 
+    <Spinner
+        android:id="@+id/share_sp"
+        android:layout_width="90dp"
+        android:layout_height="29dp"
+        android:layout_marginEnd="44dp"
+        android:layout_marginRight="44dp"
+        android:entries="@array/event_share"
+        app:layout_constraintBottom_toBottomOf="@+id/share_txt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/share_txt"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <EditText
+        android:id="@+id/share_txt"
+        android:layout_width="217dp"
+        android:layout_height="36dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Would you like to share?"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/btnCancel"
+        app:layout_constraintEnd_toStartOf="@+id/share_sp"
+        app:layout_constraintHorizontal_bias="0.774"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnUpPhoto"
+        app:layout_constraintVertical_bias="0.854" />
+
     <EditText
         android:id="@+id/title_editTxt"
         android:layout_width="312dp"
@@ -77,27 +104,33 @@
         android:layout_height="40dp"
         android:layout_marginStart="40dp"
         android:layout_marginLeft="40dp"
+        android:layout_marginTop="148dp"
         android:layout_marginEnd="4dp"
         android:layout_marginRight="4dp"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="8dp"
         android:ems="10"
         android:hint="Photo"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/share_sw"
+        app:layout_constraintBottom_toTopOf="@+id/btnCancel"
         app:layout_constraintEnd_toStartOf="@+id/video_editTxt"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/memo_editTxt"
+        app:layout_constraintVertical_bias="0.096" />
 
     <EditText
         android:id="@+id/video_editTxt"
         android:layout_width="100dp"
         android:layout_height="40dp"
+        android:layout_marginTop="3dp"
         android:ems="10"
         android:hint="Video"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="@+id/photo_editTxt"
         app:layout_constraintEnd_toStartOf="@+id/location_editTxt"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/photo_editTxt" />
+        app:layout_constraintStart_toEndOf="@+id/photo_editTxt"
+        app:layout_constraintTop_toBottomOf="@+id/photo_imgView"
+        app:layout_constraintVertical_bias="1.0" />
 
     <EditText
         android:id="@+id/location_editTxt"
@@ -105,22 +138,23 @@
         android:layout_height="40dp"
         android:layout_marginStart="2dp"
         android:layout_marginLeft="2dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="40dp"
         android:layout_marginRight="40dp"
+        android:layout_marginBottom="8dp"
         android:ems="10"
         android:hint="Location"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toBottomOf="@+id/video_editTxt"
+        app:layout_constraintBottom_toTopOf="@+id/btnAdd"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/video_editTxt" />
+        app:layout_constraintStart_toEndOf="@+id/video_editTxt"
+        app:layout_constraintTop_toBottomOf="@+id/memo_editTxt"
+        app:layout_constraintVertical_bias="0.649" />
 
     <Button
         android:id="@+id/btnAdd"
         android:layout_width="88dp"
         android:layout_height="38dp"
-        android:layout_marginStart="188dp"
-        android:layout_marginLeft="188dp"
-        android:layout_marginTop="24dp"
         android:layout_marginEnd="40dp"
         android:layout_marginRight="40dp"
         android:layout_marginBottom="32dp"
@@ -128,11 +162,7 @@
         android:text="Save"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/btnCancel"
-        app:layout_constraintTop_toBottomOf="@+id/share_sw"
-        app:layout_constraintVertical_bias="0.515" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
         android:id="@+id/btnCancel"
@@ -140,25 +170,15 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="44dp"
         android:layout_marginLeft="44dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:layout_marginBottom="32dp"
         android:text="cancel"
         app:layout_constraintBottom_toBottomOf="@+id/btnAdd"
+        app:layout_constraintEnd_toStartOf="@+id/btnAdd"
+        app:layout_constraintHorizontal_bias="0.013"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/btnAdd"
-        app:layout_constraintVertical_bias="0.450" />
-
-    <EditText
-        android:id="@+id/share_sw"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="share"
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/btnAdd"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/video_editTxt" />
+        app:layout_constraintVertical_bias="0.363" />
 
     <EditText
         android:id="@+id/memo_editTxt"
@@ -230,9 +250,9 @@
         android:id="@+id/photo_imgView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="63dp"
+        android:layout_marginTop="12dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/memo_editTxt"
         tools:srcCompat="@tools:sample/avatars" />

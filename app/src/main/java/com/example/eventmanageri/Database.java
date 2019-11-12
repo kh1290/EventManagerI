@@ -1,9 +1,12 @@
 package com.example.eventmanageri;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import java.util.List;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -19,6 +22,7 @@ public class Database {
     // Firebase Database
     private FirebaseDatabase mDatabase;
     private DatabaseReference mDatabaseRef;
+    private DatabaseReference mDatabaseUserRef;
 
     // Firebase Storage
     private FirebaseStorage mStorage;
@@ -28,6 +32,12 @@ public class Database {
 
     // Events
     private List<Event> events = new ArrayList<>();
+    private String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
+    private String userId;
+
+    public interface UserStatus {
+        void UserIsInserted();
+    }
 
     public interface DataStatus {
         void DataIsLoaded(List<Event> events, List<String> keys);
@@ -39,10 +49,27 @@ public class Database {
     public Database() {
         mDatabase = FirebaseDatabase.getInstance();
         mDatabaseRef = mDatabase.getReference("events");
+        mDatabaseUserRef = mDatabase.getReference("users");
 
         mStorage = FirebaseStorage.getInstance();
         mStoragePhotoRef = mStorage.getReference("photo");
         mStorageVideoRef = mStorage.getReference("video");
+    }
+
+    // UserIsInserted
+    public void addUser(User user, final UserStatus userStatus) {
+        String key = mDatabaseUserRef.push().getKey();
+
+        user.setKey(key);
+        user.setUid(currentUser);
+        user.setRole("user");
+
+        mDatabaseUserRef.child(key).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                userStatus.UserIsInserted();
+            }
+        });
     }
 
     // DataIsLoaded
@@ -56,7 +83,13 @@ public class Database {
                 for(DataSnapshot keyNode : dataSnapshot.getChildren()){
                     keys.add(keyNode.getKey());
                     Event event = keyNode.getValue(Event.class);
-                    events.add(event);
+                    userId = event.getUserId();
+
+                    // If current user UID is the same as the user creating the event
+                    // Then display the event
+                    if(currentUser.equals(userId)) {
+                        events.add(event);
+                    }
                 }
                 dataStatus.DataIsLoaded(events,keys);
             }
@@ -71,7 +104,10 @@ public class Database {
     // DataIsInserted
     public void addEvent(Event event, final DataStatus dataStatus) {
         String key = mDatabaseRef.push().getKey();
+        String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
         event.setEventId(key);
+        event.setUserId(currentUser);
 
         mDatabaseRef.child(key).setValue(event).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override

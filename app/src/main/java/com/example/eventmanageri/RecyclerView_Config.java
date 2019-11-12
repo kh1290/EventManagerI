@@ -14,10 +14,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 
 public class RecyclerView_Config {
     private Context mContext;
     private EventsAdapter mEventsAdapter;
+    private String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
 
     public void setConfig(RecyclerView recyclerView, Context context, List<Event> events, List<String> keys) {
         mContext = context;
@@ -28,7 +32,7 @@ public class RecyclerView_Config {
 
     class EventItemView extends RecyclerView.ViewHolder{
         private TextView mTitle, mType, mDate, mMemo, mPhoto, mVideo, mLocation, mShare;
-        private String key, mEventId;
+        private String key, mEventId, mUserId;
 
         public EventItemView(ViewGroup parent) {
             super(LayoutInflater.from(mContext).inflate(R.layout.event_list_item, parent, false));
@@ -51,6 +55,7 @@ public class RecyclerView_Config {
                     Intent intent = new Intent(mContext, EventViewActivity.class);
                     intent.putExtra("key",key);
                     intent.putExtra("eventid",mEventId);
+                    intent.putExtra("userid",mUserId);
                     intent.putExtra("title",mTitle.getText().toString());
                     intent.putExtra("type",mType.getText().toString());
                     intent.putExtra("date",mDate.getText().toString());
@@ -67,15 +72,21 @@ public class RecyclerView_Config {
 
         // Event items (for EventListActivity)
         public void bind(Event event, String key) {
-            mEventId = event.getEventId();
-            mTitle.setText(event.getTitle());
-            mType.setText(event.getType());
-            mDate.setText(event.getDate());
-            mMemo.setText(event.getMemo());
-            mPhoto.setText(event.getPhoto());
-            mVideo.setText(event.getVideo());
-            mLocation.setText(event.getLocation());
-            mShare.setText(event.getShare());
+            //Log.d("RecyclerView_Config","Current User ID : "+ currentUser);
+            //Log.d("RecyclerView_Config","get User ID : "+ event.getUserId());
+
+            if(currentUser == event.getUserId()) {
+                mEventId = event.getEventId();
+                mUserId = event.getUserId();
+                mTitle.setText(event.getTitle());
+                mType.setText(event.getType());
+                mDate.setText(event.getDate());
+                mMemo.setText(event.getMemo());
+                mPhoto.setText(event.getPhoto());
+                mVideo.setText(event.getVideo());
+                mLocation.setText(event.getLocation());
+                mShare.setText(event.getShare());
+            }
         }
     }
 

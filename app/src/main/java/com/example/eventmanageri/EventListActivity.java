@@ -8,7 +8,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.List;
+import android.util.Log;
 
 public class EventListActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
@@ -19,6 +23,10 @@ public class EventListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_event_list);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_events);
+
+        String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        Log.d("EventListActivity", "Current User :" + currentUser);
+
         new Database().readEvents(new Database.DataStatus() {
             @Override
             public void DataIsLoaded(List<Event> events, List<String> keys) {

@@ -18,13 +18,13 @@ public class EventModActivity extends AppCompatActivity {
 
     // UI references
     private EditText mTitle_editTxt, mMemo_editTxt,
-            mPhoto_editTxt, mVideo_editTxt, mLocation_editTxt, mShare_sw;
+            mPhoto_editTxt, mVideo_editTxt, mLocation_editTxt;
     private TextView mDate_viewTxt;
-    private Spinner mType_sp;
+    private Spinner mType_sp, mShare_sp;
     private Button mBtnDate, mBtnUpdate, mBtnDelete, mBtnCancel;
 
     // Data references
-    private String key, title, date, memo, type, photo, video, location, share;
+    private String key, userid, title, date, memo, type, photo, video, location, share;
 
     // Choose Date
     private void chooseDate() {
@@ -45,7 +45,7 @@ public class EventModActivity extends AppCompatActivity {
         mVideo_editTxt = (EditText) findViewById(R.id.video_editTxt);
         mLocation_editTxt = (EditText) findViewById(R.id.location_editTxt);
         mType_sp = (Spinner) findViewById(R.id.type_sp);
-        mShare_sw = (EditText) findViewById(R.id.share_sw);
+        mShare_sp = (Spinner) findViewById(R.id.share_sp);
         mBtnDate = (Button) findViewById(R.id.btnDate);
         mBtnUpdate = (Button) findViewById(R.id.btnUpdate);
         mBtnDelete = (Button) findViewById(R.id.btnDelete);
@@ -53,6 +53,7 @@ public class EventModActivity extends AppCompatActivity {
 
         // Get data from EventListActivity
         key = getIntent().getStringExtra("key");
+        userid = getIntent().getStringExtra("userid");
         title = getIntent().getStringExtra("title");
         date = getIntent().getStringExtra("date");
         memo = getIntent().getStringExtra("memo");
@@ -70,7 +71,7 @@ public class EventModActivity extends AppCompatActivity {
         mVideo_editTxt.setText(video);
         mLocation_editTxt.setText(location);
         mType_sp.setSelection(getIndex_SpinnerItem(mType_sp, type));
-        mShare_sw.setText(share);
+        mShare_sp.setSelection(getIndex_SpinnerItem(mShare_sp, share));
 
 
         // <------------------------ Button ------------------------>
@@ -89,6 +90,7 @@ public class EventModActivity extends AppCompatActivity {
                 Event event = new Event();
 
                 event.setEventId(key);
+                event.setUserId(userid);
                 event.setTitle(mTitle_editTxt.getText().toString());
                 event.setDate(mDate_viewTxt.getText().toString());
                 event.setMemo(mMemo_editTxt.getText().toString());
@@ -96,7 +98,7 @@ public class EventModActivity extends AppCompatActivity {
                 event.setVideo(mVideo_editTxt.getText().toString());
                 event.setLocation(mLocation_editTxt.getText().toString());
                 event.setType(mType_sp.getSelectedItem().toString());
-                event.setShare(mShare_sw.getText().toString());
+                event.setShare(mShare_sp.getSelectedItem().toString());
 
                 new Database().updateEvent(key, event, new Database.DataStatus() {
                     @Override

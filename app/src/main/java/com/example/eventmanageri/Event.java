@@ -4,6 +4,7 @@ package com.example.eventmanageri;
 
 public class Event {
     private String eventId;
+    private String userId;
     private String title;
     private String type;
     private String date;
@@ -17,8 +18,9 @@ public class Event {
     public Event() {
     }
 
-    public Event(String eventId, String title, String type, String date, String photoUrl, String memo, String photo, String video, String location, String share) {
+    public Event(String eventId, String userId, String title, String type, String date, String photoUrl, String memo, String photo, String video, String location, String share) {
         this.eventId = eventId;
+        this.userId = userId;
         this.title = title;
         this.type = type;
         this.date = date;
@@ -36,6 +38,14 @@ public class Event {
 
     public void setEventId(String eventId) {
         this.eventId = eventId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getTitle() {

@@ -33,4 +33,5 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'com.github.kinkoi:materialsearchview:1.4.0'
 }

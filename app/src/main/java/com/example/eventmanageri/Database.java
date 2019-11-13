@@ -33,7 +33,9 @@ public class Database {
     // Events
     private List<Event> events = new ArrayList<>();
     private String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
-    private String userId;
+    private String userId, share;
+
+    private RecyclerView_Config.EventsAdapter adapter;
 
     public interface UserStatus {
         void UserIsInserted();
@@ -80,14 +82,16 @@ public class Database {
                 events.clear();
                 List<String> keys = new ArrayList<>();
 
+                //new RecyclerView_Config.EventsAdapter(events, keys);
+
                 for(DataSnapshot keyNode : dataSnapshot.getChildren()){
                     keys.add(keyNode.getKey());
                     Event event = keyNode.getValue(Event.class);
+                    share = event.getShare();
                     userId = event.getUserId();
 
-                    // If current user UID is the same as the user creating the event
-                    // Then display the event
-                    if(currentUser.equals(userId)) {
+                    // If an event is shared, then display the event
+                    if(share.equals("Yes") || userId.equals(currentUser)) {
                         events.add(event);
                     }
                 }
@@ -123,7 +127,13 @@ public class Database {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        dataStatus.DataIsUpdated();
+                        //userId = event.getUserId();
+                        //Log.d("Database", "aaa userId value :" + userId);
+                        //Log.d("Database", "aaa currentUser value :" + currentUser);
+
+                        //if(currentUser.equals(userId)) {
+                            dataStatus.DataIsUpdated();
+                        //}
                     }
                 });
     }

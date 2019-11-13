@@ -5,7 +5,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 import java.util.List;
 import android.content.Intent;
 
@@ -19,7 +23,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class RecyclerView_Config {
     private Context mContext;
-    private EventsAdapter mEventsAdapter;
+    public EventsAdapter mEventsAdapter;
     private String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
@@ -72,10 +76,6 @@ public class RecyclerView_Config {
 
         // Event items (for EventListActivity)
         public void bind(Event event, String key) {
-            //Log.d("RecyclerView_Config","Current User ID : "+ currentUser);
-            //Log.d("RecyclerView_Config","get User ID : "+ event.getUserId());
-
-            if(currentUser == event.getUserId()) {
                 mEventId = event.getEventId();
                 mUserId = event.getUserId();
                 mTitle.setText(event.getTitle());
@@ -86,17 +86,27 @@ public class RecyclerView_Config {
                 mVideo.setText(event.getVideo());
                 mLocation.setText(event.getLocation());
                 mShare.setText(event.getShare());
-            }
         }
     }
 
-    class EventsAdapter extends RecyclerView.Adapter<EventItemView> {
+    class EventsAdapter extends RecyclerView.Adapter<EventItemView> implements Filterable {
         private List<Event> mEventList;
         private List<String> mKeys;
+        // add
+        private List<Event> mEventListFull;
+
+        /*
+        public EventsAdapter(List<Event> mEventList) {
+            this.mEventList = mEventList;
+            mExample = new ArrayList<>(mEventList);
+        }
+        */
 
         public EventsAdapter(List<Event> mEventList, List<String> mKeys) {
             this.mEventList = mEventList;
             this.mKeys = mKeys;
+            // add
+            mEventListFull = new ArrayList<>(mEventList);
         }
 
         @NonNull
@@ -114,5 +124,43 @@ public class RecyclerView_Config {
         public int getItemCount() {
             return mEventList.size();
         }
+
+        // add
+        @Override
+        public Filter getFilter() {
+            return eventFilter;
+        }
+
+        private Filter eventFilter = new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                List<Event> filterList = new ArrayList<>();
+
+                if (constraint.equals(null) || constraint.length() == 0) {
+                    filterList.addAll(mEventListFull);
+                } else {
+                    String filterPattern = constraint.toString().toLowerCase().trim();
+
+                    for (Event event : mEventListFull) {
+                        if (event.getTitle().toLowerCase().contains(filterPattern)) {
+                            filterList.add(event);
+                        }
+                    }
+                }
+
+                FilterResults results = new FilterResults();
+                results.values = filterList;
+
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                mEventListFull.clear();
+                mEventListFull.addAll((List) results.values);
+                notifyDataSetChanged();
+
+            }
+        };
     }
 }

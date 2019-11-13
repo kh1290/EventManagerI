@@ -12,7 +12,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
-        android:text="title"
+        android:hint="Title"
         android:textColor="#FF5722"
         android:textSize="22sp"
         android:textStyle="bold" />
@@ -30,7 +30,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"
-            android:text="category" />
+            android:hint="Category" />
 
         <TextView
             android:id="@+id/date_viewTxt"
@@ -40,7 +40,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"
-            android:text="date" />
+            android:hint="Date" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -55,7 +55,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginRight="10dp"
-                android:text="Memo" />
+                android:hint="Description" />
 
         </LinearLayout>
 

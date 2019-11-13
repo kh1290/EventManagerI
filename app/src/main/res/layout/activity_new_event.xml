@@ -221,34 +221,6 @@
         app:layout_constraintVertical_bias="0.428" />
 
     <Button
-        android:id="@+id/btnUpVideo"
-        android:layout_width="95dp"
-        android:layout_height="45dp"
-        android:layout_marginEnd="140dp"
-        android:layout_marginRight="140dp"
-        android:text="Video"
-        app:layout_constraintBottom_toBottomOf="@+id/btnUpPhoto"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btnUpPhoto"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <EditText
-        android:id="@+id/photo_editTxt"
-        android:layout_width="100dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginLeft="40dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginBottom="36dp"
-        android:ems="10"
-        android:hint="Photo"
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/share_sw"
-        app:layout_constraintEnd_toStartOf="@+id/video_editTxt"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
         android:id="@+id/btnUpPhoto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -262,9 +234,20 @@
         app:layout_constraintTop_toBottomOf="@+id/memo_editTxt"
         app:layout_constraintVertical_bias="0.0" />
 
+    <Button
+        android:id="@+id/btnUpVideo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="48dp"
+        android:layout_marginRight="48dp"
+        android:text="Video"
+        app:layout_constraintBottom_toBottomOf="@+id/btnUpPhoto"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnUpPhoto"
+        app:layout_constraintVertical_bias="0.0" />
+
     <ImageView
         android:id="@+id/photo_imgView"
-<<<<<<< Updated upstream
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
@@ -272,19 +255,6 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/memo_editTxt"
-=======
-        android:layout_width="94dp"
-        android:layout_height="95dp"
-        tools:layout_editor_absoluteX="46dp"
-        tools:layout_editor_absoluteY="437dp"
->>>>>>> Stashed changes
         tools:srcCompat="@tools:sample/avatars" />
-
-    <VideoView
-        android:id="@+id/videoView"
-        android:layout_width="111dp"
-        android:layout_height="96dp"
-        tools:layout_editor_absoluteX="176dp"
-        tools:layout_editor_absoluteY="437dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

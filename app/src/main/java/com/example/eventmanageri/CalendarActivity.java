@@ -21,6 +21,7 @@ public class CalendarActivity extends AppCompatActivity {
         mCalendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
+                month = month + 1;
                 String date = dayOfMonth + "/" + month + "/" + year;
 
                 Intent intent = new Intent(CalendarActivity.this, NewEventActivity.class);

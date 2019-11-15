@@ -37,7 +37,7 @@ public class EventViewActivity extends AppCompatActivity {
         mPhoto_viewTxt = (TextView) findViewById(R.id.Photo_txtView);
         mVideo_viewTxt = (TextView) findViewById(R.id.Video_txtView);
         mLocation_viewTxt = (TextView) findViewById(R.id.Location_txtView);
-        mShare_sw = (TextView) findViewById(R.id.Share_textView);
+        //mShare_sw = (TextView) findViewById(R.id.Share_textView);
         mBtnUpdate = (Button) findViewById(R.id.btnUpdate);
 
         key = getIntent().getStringExtra("key");

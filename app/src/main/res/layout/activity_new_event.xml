@@ -230,22 +230,6 @@
         app:layout_constraintTop_toTopOf="@+id/btnUpPhoto"
         app:layout_constraintVertical_bias="0.0" />
 
-    <EditText
-        android:id="@+id/photo_editTxt"
-        android:layout_width="100dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginLeft="40dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginBottom="36dp"
-        android:ems="10"
-        android:hint="Photo"
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/share_sw"
-        app:layout_constraintEnd_toStartOf="@+id/video_editTxt"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <Button
         android:id="@+id/btnUpPhoto"
         android:layout_width="wrap_content"
@@ -259,20 +243,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/memo_editTxt"
         app:layout_constraintVertical_bias="0.0" />
-
-    <VideoView
-        android:id="@+id/videoView"
-        android:layout_width="114dp"
-        android:layout_height="110dp"
-        tools:layout_editor_absoluteX="140dp"
-        tools:layout_editor_absoluteY="366dp" />
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="103dp"
-        android:layout_height="109dp"
-        tools:layout_editor_absoluteX="37dp"
-        tools:layout_editor_absoluteY="367dp"
-        tools:srcCompat="@tools:sample/avatars" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

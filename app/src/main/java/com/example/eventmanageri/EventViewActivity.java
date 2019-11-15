@@ -16,7 +16,7 @@ import com.google.firebase.auth.FirebaseAuth;
 public class EventViewActivity extends AppCompatActivity {
 
     private TextView mTitle_viewTxt, mDate_viewTxt, mMemo_viewTxt, mPhoto_viewTxt,
-            mVideo_viewTxt, mLocation_viewTxt, mType_viewTxt, mShare_sw;
+            mVideo_viewTxt, mLocation_viewTxt, mType_viewTxt;
     // private ImageView mPhoto_imgView;
 
     private String key, eventid, userid, title, date, memo, photo, video, location, share, type;
@@ -37,7 +37,6 @@ public class EventViewActivity extends AppCompatActivity {
         mPhoto_viewTxt = (TextView) findViewById(R.id.Photo_txtView);
         mVideo_viewTxt = (TextView) findViewById(R.id.Video_txtView);
         mLocation_viewTxt = (TextView) findViewById(R.id.Location_txtView);
-        //mShare_sw = (TextView) findViewById(R.id.Share_textView);
         mBtnUpdate = (Button) findViewById(R.id.btnUpdate);
 
         key = getIntent().getStringExtra("key");
@@ -59,7 +58,6 @@ public class EventViewActivity extends AppCompatActivity {
         mPhoto_viewTxt.setText(photo);
         mVideo_viewTxt.setText(video);
         mLocation_viewTxt.setText(location);
-        mShare_sw.setText(share);
 
 
         // Edit Event : "UPDATE" Button
@@ -78,7 +76,7 @@ public class EventViewActivity extends AppCompatActivity {
                     intent.putExtra("photo",mPhoto_viewTxt.getText().toString());
                     intent.putExtra("video",mVideo_viewTxt.getText().toString());
                     intent.putExtra("location",mLocation_viewTxt.getText().toString());
-                    intent.putExtra("share",mShare_sw.getText().toString());
+                    intent.putExtra("share",share);
                     startActivity(intent);
 
                 } else {

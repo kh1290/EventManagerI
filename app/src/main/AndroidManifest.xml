@@ -13,15 +13,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".EventSearchActivity"></activity>
-        <activity android:name=".TestActivity" />
-        <activity android:name=".SignUpActivity" />
-        <activity android:name=".HomeActivity" />
-        <activity android:name=".EventListActivity" />
-        <activity android:name=".EventModActivity" />
-        <activity android:name=".EventViewActivity" />
-        <activity android:name=".NewEventActivity" />
-        <activity android:name=".CalendarActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".Activities.TestActivity" />
+        <activity android:name=".Activities.SignUpActivity" />
+        <activity android:name=".Activities.HomeActivity" />
+        <activity android:name=".Activities.EventListActivity" />
+        <activity android:name=".Activities.EventModActivity" />
+        <activity android:name=".Activities.EventViewActivity" />
+        <activity android:name=".Activities.NewEventActivity" />
+        <activity android:name=".Activities.CalendarActivity" />
+        <activity android:name=".Activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

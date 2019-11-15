@@ -1,4 +1,4 @@
-package com.example.eventmanageri;
+package com.example.eventmanageri.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.net.Uri;
 import android.widget.Toast;
 
+import com.example.eventmanageri.R;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;

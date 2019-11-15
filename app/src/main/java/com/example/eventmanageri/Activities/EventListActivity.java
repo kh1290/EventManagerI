@@ -1,4 +1,4 @@
-package com.example.eventmanageri;
+package com.example.eventmanageri.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
@@ -7,13 +7,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.util.Log;
 
-import com.google.firebase.auth.FirebaseAuth;
+import com.example.eventmanageri.Database;
+import com.example.eventmanageri.Models.Event;
+import com.example.eventmanageri.R;
+import com.example.eventmanageri.Adapters.RecyclerView_Config;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.List;
 
 public class EventListActivity extends AppCompatActivity {

@@ -1,39 +1,31 @@
-package com.example.eventmanageri;
+package com.example.eventmanageri.Activities;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import java.util.UUID;
 
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
-import android.os.Handler;
-import android.provider.MediaStore;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.net.Uri;
-import android.graphics.Bitmap;
 
+import com.example.eventmanageri.Database;
+import com.example.eventmanageri.Models.Event;
+import com.example.eventmanageri.R;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 import android.content.ContentResolver;
 
-import org.w3c.dom.Text;
-
-import java.util.HashMap;
 import java.util.List;
 
 
@@ -143,7 +135,7 @@ public class NewEventActivity extends AppCompatActivity {
 
         mTitle_editTxt = (EditText) findViewById(R.id.title_editTxt);
         mMemo_editTxt = (EditText) findViewById(R.id.memo_editTxt);
-        mPhoto_imgView = (ImageView) findViewById(R.id.photo_imgView);
+        //mPhoto_imgView = (ImageView) findViewById(R.id.photo_imgView);
         mPhoto_editTxt = (EditText) findViewById(R.id.photo_editTxt);
         mVideo_editTxt = (EditText) findViewById(R.id.video_editTxt);
         mLocation_editTxt = (EditText) findViewById(R.id.location_editTxt);

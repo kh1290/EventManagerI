@@ -1,11 +1,13 @@
-package com.example.eventmanageri;
+package com.example.eventmanageri.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import android.util.Log;
+
 import android.os.Bundle;
 import android.widget.CalendarView;
 import android.content.Intent;
+
+import com.example.eventmanageri.R;
 
 public class CalendarActivity extends AppCompatActivity {
 

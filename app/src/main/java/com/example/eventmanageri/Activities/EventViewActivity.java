@@ -67,7 +67,7 @@ public class EventViewActivity extends AppCompatActivity {
         mLocation_viewTxt = (TextView) findViewById(R.id.Location_txtView);
         mComment = (EditText) findViewById(R.id.comment_editView);
         mBtnUpdate = (Button) findViewById(R.id.btnUpdate);
-        mBtnAddComment = (Button) findViewById(R.id.btnAddComent);
+        mBtnAddComment = (Button) findViewById(R.id.btnAddComment);
         mDatabase = FirebaseDatabase.getInstance();
         mAuth = FirebaseAuth.getInstance();
         mUser = FirebaseAuth.getInstance().getCurrentUser();

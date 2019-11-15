@@ -221,6 +221,18 @@
         app:layout_constraintVertical_bias="0.428" />
 
     <Button
+        android:id="@+id/btnUpVideo"
+        android:layout_width="95dp"
+        android:layout_height="45dp"
+        android:layout_marginEnd="140dp"
+        android:layout_marginRight="140dp"
+        android:text="Video"
+        app:layout_constraintBottom_toBottomOf="@+id/btnUpPhoto"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnUpPhoto"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
         android:id="@+id/btnUpPhoto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -234,27 +246,5 @@
         app:layout_constraintTop_toBottomOf="@+id/memo_editTxt"
         app:layout_constraintVertical_bias="0.0" />
 
-    <Button
-        android:id="@+id/btnUpVideo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="48dp"
-        android:layout_marginRight="48dp"
-        android:text="Video"
-        app:layout_constraintBottom_toBottomOf="@+id/btnUpPhoto"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btnUpPhoto"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <ImageView
-        android:id="@+id/photo_imgView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/memo_editTxt"
-        tools:srcCompat="@tools:sample/avatars" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

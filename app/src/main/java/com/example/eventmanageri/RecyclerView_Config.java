@@ -10,6 +10,7 @@ import android.widget.Filterable;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import android.content.Intent;
 
@@ -95,13 +96,6 @@ public class RecyclerView_Config {
         // add
         private List<Event> mEventListFull;
 
-        /*
-        public EventsAdapter(List<Event> mEventList) {
-            this.mEventList = mEventList;
-            mExample = new ArrayList<>(mEventList);
-        }
-        */
-
         public EventsAdapter(List<Event> mEventList, List<String> mKeys) {
             this.mEventList = mEventList;
             this.mKeys = mKeys;
@@ -136,7 +130,7 @@ public class RecyclerView_Config {
             protected FilterResults performFiltering(CharSequence constraint) {
                 List<Event> filterList = new ArrayList<>();
 
-                if (constraint.equals(null) || constraint.length() == 0) {
+                if (constraint.toString().isEmpty()) {
                     filterList.addAll(mEventListFull);
                 } else {
                     String filterPattern = constraint.toString().toLowerCase().trim();
@@ -150,14 +144,13 @@ public class RecyclerView_Config {
 
                 FilterResults results = new FilterResults();
                 results.values = filterList;
-
                 return results;
             }
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 mEventListFull.clear();
-                mEventListFull.addAll((List) results.values);
+                mEventListFull.addAll((Collection<? extends Event>) results.values);
                 notifyDataSetChanged();
 
             }

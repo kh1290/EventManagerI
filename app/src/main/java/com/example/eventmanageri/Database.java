@@ -92,6 +92,8 @@ public class Database {
 
                     // If an event is shared, then display the event
                     if(share.equals("Yes") || userId.equals(currentUser)) {
+                        //RecyclerView_Config test = new RecyclerView_Config();
+                        //test.mEventsAdapter.getFilter().filter(query);
                         events.add(event);
                     }
                 }

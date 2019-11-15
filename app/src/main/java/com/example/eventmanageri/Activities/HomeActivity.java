@@ -1,6 +1,5 @@
-package com.example.eventmanageri;
+package com.example.eventmanageri.Activities;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.View;
@@ -8,8 +7,8 @@ import android.widget.*;
 import android.os.Bundle;
 import android.content.Intent;
 
+import com.example.eventmanageri.R;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 public class HomeActivity extends AppCompatActivity {
     TextView mGoToList_ViewTxt;

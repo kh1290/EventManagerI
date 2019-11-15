@@ -1,4 +1,4 @@
-package com.example.eventmanageri;
+package com.example.eventmanageri.Models;
 
 // Define items
 

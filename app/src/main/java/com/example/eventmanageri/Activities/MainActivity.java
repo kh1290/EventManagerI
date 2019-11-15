@@ -1,4 +1,4 @@
-package com.example.eventmanageri;
+package com.example.eventmanageri.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.*;
 import android.content.Intent;
 
+import com.example.eventmanageri.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -89,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         tvSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intSignUp = new Intent(MainActivity.this,SignUpActivity.class);
+                Intent intSignUp = new Intent(MainActivity.this, SignUpActivity.class);
                 startActivity(intSignUp);
             }
         });

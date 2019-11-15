@@ -1,4 +1,4 @@
-package com.example.eventmanageri;
+package com.example.eventmanageri.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +11,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.eventmanageri.Database;
+import com.example.eventmanageri.R;
+import com.example.eventmanageri.Models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;

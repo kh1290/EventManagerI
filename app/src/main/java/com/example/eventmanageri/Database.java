@@ -1,10 +1,11 @@
 package com.example.eventmanageri;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import java.util.List;
 
+import com.example.eventmanageri.Adapters.RecyclerView_Config;
+import com.example.eventmanageri.Models.Event;
+import com.example.eventmanageri.Models.User;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -35,7 +36,7 @@ public class Database {
     private String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
     private String userId, share;
 
-    private RecyclerView_Config.EventsAdapter adapter;
+//    private RecyclerView_Config.EventsAdapter adapter;
 
     public interface UserStatus {
         void UserIsInserted();

@@ -12,7 +12,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".EventSearchActivity"></activity>
+        <activity
+            android:name=".Activities.HomeBarActivity"
+            android:label="@string/title_activity_home_bar"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".Activities.HomeMenuActivity"
+            android:label="@string/title_activity_home_menu"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".HomeMenu"
+            android:label="@string/title_activity_home_menu"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".EventSearchActivity" />
         <activity android:name=".Activities.TestActivity" />
         <activity android:name=".Activities.SignUpActivity" />
         <activity android:name=".Activities.HomeActivity" />

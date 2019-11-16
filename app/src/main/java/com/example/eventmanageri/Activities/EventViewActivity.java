@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.renderscript.Sampler;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -96,33 +98,6 @@ public class EventViewActivity extends AppCompatActivity {
         mVideo_viewTxt.setText(video);
         mLocation_viewTxt.setText(location);
 
-
-        // Edit Event : "UPDATE" Button
-        mBtnUpdate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Go to EventModActivity if the current user is the owner
-                if (uDisplayName.equals(userid)) {
-                    Intent intent = new Intent(EventViewActivity.this, EventModActivity.class);
-                    intent.putExtra("key",eventid);
-                    intent.putExtra("userid",userid);
-                    intent.putExtra("title",mTitle_viewTxt.getText().toString());
-                    intent.putExtra("type",mType_viewTxt.getText().toString());
-                    intent.putExtra("date",mDate_viewTxt.getText().toString());
-                    intent.putExtra("memo",mMemo_viewTxt.getText().toString());
-                    intent.putExtra("photo",mPhoto_viewTxt.getText().toString());
-                    intent.putExtra("video",mVideo_viewTxt.getText().toString());
-                    intent.putExtra("location",mLocation_viewTxt.getText().toString());
-                    intent.putExtra("share",share);
-                    startActivity(intent);
-
-                } else {
-                    Toast.makeText(EventViewActivity.this,"You do not have permission",Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        });
-
         // Edit Event : "Comment" Button
         mBtnAddComment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,23 +106,30 @@ public class EventViewActivity extends AppCompatActivity {
                 mBtnAddComment.setVisibility(View.INVISIBLE);
                 DatabaseReference commentRef = mDatabase.getReference("comment").child(eventid).push();
                 String comment_content = mComment.getText().toString();
-                Comment comment = new Comment(comment_content, uId, uDisplayName);
+                String uid = mUser.getUid();
+                String uname = mUser.getDisplayName();
+                Comment comment = new Comment(comment_content, uid, uname);
 
                 commentRef.setValue(comment).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Toast.makeText(EventViewActivity.this,"Comment added", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EventViewActivity.this,"Comment added",
+                                Toast.LENGTH_SHORT).show();
                         mComment.setText("");
                         mBtnAddComment.setVisibility(View.VISIBLE);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(EventViewActivity.this,"Unsuccessful", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EventViewActivity.this,"Unsuccessful",
+                                Toast.LENGTH_SHORT).show();
+
                     }
                 });
+
             }
         });
+
         iniRvComment();
 
     }
@@ -178,6 +160,38 @@ public class EventViewActivity extends AppCompatActivity {
         });
     }
 
+    // Menu: "Update"
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.event_view_activity_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.update_event:
+                if (uDisplayName.equals(userid)) {
+                    Intent intent = new Intent(EventViewActivity.this, EventModActivity.class);
+                    intent.putExtra("key",eventid);
+                    intent.putExtra("userid",userid);
+                    intent.putExtra("title",mTitle_viewTxt.getText().toString());
+                    intent.putExtra("type",mType_viewTxt.getText().toString());
+                    intent.putExtra("date",mDate_viewTxt.getText().toString());
+                    intent.putExtra("memo",mMemo_viewTxt.getText().toString());
+                    intent.putExtra("photo",mPhoto_viewTxt.getText().toString());
+                    intent.putExtra("video",mVideo_viewTxt.getText().toString());
+                    intent.putExtra("location",mLocation_viewTxt.getText().toString());
+                    intent.putExtra("share",share);
+                    startActivity(intent);
+
+                } else {
+                    Toast.makeText(EventViewActivity.this,"You do not have permission",Toast.LENGTH_SHORT).show();
+                }
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     private String timestampToString(long time) {
         Calendar calendar = Calendar.getInstance(Locale.ENGLISH);

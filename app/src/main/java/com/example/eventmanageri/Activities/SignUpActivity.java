@@ -18,6 +18,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class SignUpActivity extends AppCompatActivity {
     EditText username, password;
@@ -70,6 +72,7 @@ public class SignUpActivity extends AppCompatActivity {
                                         Toast.makeText(SignUpActivity.this, "Signed up successfully!", Toast.LENGTH_SHORT).show();
                                     }
                                 });
+                                updateUserInfo(email,mFirebaseAuth.getCurrentUser());
                             };
                         };
                     });
@@ -88,5 +91,13 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    //  Add "DisplayName"
+    private void updateUserInfo(final String name, final FirebaseUser currentUser) {
+        UserProfileChangeRequest profileUpdate = new UserProfileChangeRequest.Builder()
+                .setDisplayName(name)
+                .build();
+        currentUser.updateProfile(profileUpdate);
     }
 }

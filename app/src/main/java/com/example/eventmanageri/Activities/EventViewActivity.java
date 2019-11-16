@@ -36,18 +36,17 @@ import java.util.Locale;
 
 public class EventViewActivity extends AppCompatActivity {
 
-    private TextView mTitle_viewTxt, mDate_viewTxt, mMemo_viewTxt, mPhoto_viewTxt,
+    private TextView mTitle_viewTxt, mUser_viewTxt, mDate_viewTxt, mMemo_viewTxt, mPhoto_viewTxt,
             mVideo_viewTxt, mLocation_viewTxt, mType_viewTxt;
     // private ImageView mPhoto_imgView;
 
-    private String key, eventid, userid, title, date, memo, photo, video, location, share, type;
+    private String key, eventid, userid, title, date, memo, photo,
+            video, location, share, type, uId, uDisplayName;
     private EditText mComment;
     private Button mBtnUpdate, mBtnAddComment;
-    RecyclerView RvComment;
-    private String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
     private FirebaseDatabase mDatabase;
-    private FirebaseAuth mAuth;
     private FirebaseUser mUser;
+    RecyclerView RvComment;
     List<Comment> listComment;
     CommentAdapter commentAdapter;
 
@@ -59,6 +58,7 @@ public class EventViewActivity extends AppCompatActivity {
 
         RvComment = findViewById(R.id.rv_comment);
         mTitle_viewTxt = (TextView) findViewById(R.id.title_textView);
+        mUser_viewTxt = (TextView) findViewById(R.id.user_viewTxt);
         mDate_viewTxt = (TextView) findViewById(R.id.date_viewTxt);
         mMemo_viewTxt = (TextView) findViewById(R.id.memo_txtView);
         mType_viewTxt = (TextView) findViewById(R.id.type_txtView);
@@ -68,9 +68,12 @@ public class EventViewActivity extends AppCompatActivity {
         mComment = (EditText) findViewById(R.id.comment_editView);
         mBtnUpdate = (Button) findViewById(R.id.btnUpdate);
         mBtnAddComment = (Button) findViewById(R.id.btnAddComment);
+
         mDatabase = FirebaseDatabase.getInstance();
-        mAuth = FirebaseAuth.getInstance();
         mUser = FirebaseAuth.getInstance().getCurrentUser();
+        uId = mUser.getUid();
+        uDisplayName = mUser.getDisplayName();
+
 
         key = getIntent().getStringExtra("key");
         eventid = getIntent().getStringExtra("eventid");
@@ -85,6 +88,7 @@ public class EventViewActivity extends AppCompatActivity {
         type = getIntent().getStringExtra("type");
 
         mTitle_viewTxt.setText(title);
+        mUser_viewTxt.setText(userid);
         mDate_viewTxt.setText(date);
         mMemo_viewTxt.setText(memo);
         mType_viewTxt.setText(type);
@@ -98,7 +102,7 @@ public class EventViewActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Go to EventModActivity if the current user is the owner
-                if (currentUser.equals(userid)) {
+                if (uDisplayName.equals(userid)) {
                     Intent intent = new Intent(EventViewActivity.this, EventModActivity.class);
                     intent.putExtra("key",eventid);
                     intent.putExtra("userid",userid);
@@ -127,59 +131,60 @@ public class EventViewActivity extends AppCompatActivity {
                 mBtnAddComment.setVisibility(View.INVISIBLE);
                 DatabaseReference commentRef = mDatabase.getReference("comment").child(eventid).push();
                 String comment_content = mComment.getText().toString();
-                String uid = mUser.getUid();
-                String uname = mUser.getDisplayName();
-                Comment comment = new Comment(comment_content, uid, uname);
+                Comment comment = new Comment(comment_content, uId, uDisplayName);
 
                 commentRef.setValue(comment).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Toast.makeText(EventViewActivity.this,"Comment added",
-                                Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EventViewActivity.this,"Comment added", Toast.LENGTH_SHORT).show();
                         mComment.setText("");
                         mBtnAddComment.setVisibility(View.VISIBLE);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(EventViewActivity.this,"Unsuccessful",
-                                Toast.LENGTH_SHORT).show();
-
+                        Toast.makeText(EventViewActivity.this,"Unsuccessful", Toast.LENGTH_SHORT).show();
                     }
                 });
-
             }
         });
+        iniRvComment();
 
     }
 
-    //iniRvComment();
+    private void iniRvComment() {
+        RvComment.setLayoutManager(new LinearLayoutManager(this));
 
-}
-/*
-private void iniRvComment() {
-    RvComment.setLayoutManager(new LinearLayoutManager(this));
+        DatabaseReference commentRefence = mDatabase.getReference("comment").child(eventid);
+        //ValueEventListener valueEventListener =
+        commentRefence.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                listComment = new ArrayList<>();
+                for (DataSnapshot snap : dataSnapshot.getChildren()) {
 
-    DatabaseReference commentRef = mDatabase.getReference("comment").child(key);
-    final ValueEventListener valueEventListener = commentRef.addValueEventListener(new ValueEventListener() {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-            listComment = new ArrayList<>();
-            for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                    Comment comment = snap.getValue(Comment.class);
+                    listComment.add(comment);
+                }
 
-                Comment comment = snap.getValue(Comment.class);
-                listComment.add(comment);
+                commentAdapter = new CommentAdapter(getApplicationContext(),listComment);
+                RvComment.setAdapter(commentAdapter);
             }
 
-            commentAdapter = new CommentAdapter(getApplicationContext(), listComment);
-            RvComment.setAdapter(commentAdapter);
-        }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-        @Override
-        public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }
 
-        }
-    });
+
+    private String timestampToString(long time) {
+        Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
+        calendar.setTimeInMillis(time);
+        String commentDate = DateFormat.getDateInstance().toString();
+        return commentDate;
+    }
+
 }
 
- */

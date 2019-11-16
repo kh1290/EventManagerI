@@ -73,18 +73,15 @@ public class EventListActivity extends AppCompatActivity {
     }
 
 
-    // Menu: "Search"
+    // Menu: "Search", "New Event"
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.eventlist_activity_menu, menu);
         MenuItem item = menu.findItem(R.id.search_event);
         materialSearchView.setMenuItem(item);
-
-        //return super.onCreateOptionsMenu(menu);
         return true;
     }
 
-    // Menu: "New Event"
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){

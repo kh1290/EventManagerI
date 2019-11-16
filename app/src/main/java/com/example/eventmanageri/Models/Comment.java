@@ -15,15 +15,18 @@ public class Comment {
         this.content = content;
         this.uid = uid;
         this.uname = uname;
-        this.timestamp = ServerValue.TIMESTAMP;
+        //this.timestamp = ServerValue.TIMESTAMP;
     }
 
+    /*
     public Comment(String content, String uid, String uname, Object timestamp) {
         this.content = content;
         this.uid = uid;
         this.uname = uname;
         this.timestamp = timestamp;
     }
+
+     */
 
     public String getContent() {
         return content;
@@ -49,6 +52,7 @@ public class Comment {
         this.uname = uname;
     }
 
+    /*
     public Object getTimestamp() {
         return timestamp;
     }
@@ -56,4 +60,6 @@ public class Comment {
     public void setTimestamp(Object timestamp) {
         this.timestamp = timestamp;
     }
+
+     */
 }

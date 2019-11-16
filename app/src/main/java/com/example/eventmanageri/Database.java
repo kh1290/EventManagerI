@@ -33,7 +33,7 @@ public class Database {
 
     // Events
     private List<Event> events = new ArrayList<>();
-    private String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
+    private String currentUser = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
     private String userId, share;
 
 //    private RecyclerView_Config.EventsAdapter adapter;
@@ -111,7 +111,7 @@ public class Database {
     // DataIsInserted
     public void addEvent(Event event, final DataStatus dataStatus) {
         String key = mDatabaseRef.push().getKey();
-        String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String currentUser = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
 
         event.setEventId(key);
         event.setUserId(currentUser);

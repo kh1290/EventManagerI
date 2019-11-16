@@ -9,9 +9,9 @@ import android.content.Context;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.w3c.dom.Comment;
 import java.util.List;
 
+import com.example.eventmanageri.Models.Comment;
 import com.example.eventmanageri.R;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentViewHolder> {
@@ -19,6 +19,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     private Context mContext;
     private List<Comment> mData;
 
+    public CommentAdapter(Context mContext, List<com.example.eventmanageri.Models.Comment> mData) {
+        this.mContext = mContext;
+        this.mData = mData;
+    }
 
     @NonNull
     @Override
@@ -29,8 +33,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
 
     @Override
     public void onBindViewHolder(@NonNull CommentViewHolder holder, int position) {
-        //holder.tvUser.setText(mData.get(position).getUserData());
-        holder.tvComment.setText(mData.get(position).getTextContent());
+        holder.tvUser.setText(mData.get(position).getUname());
+        holder.tvComment.setText(mData.get(position).getContent());
     }
 
     @Override
@@ -44,7 +48,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
 
         public CommentViewHolder (View itemView) {
             super(itemView);
-            tvUser = itemView.findViewById(R.id.user_txtView);
+            tvUser = itemView.findViewById(R.id.user_viewTxt);
             tvComment = itemView.findViewById(R.id.comment_txtView);
         }
     }

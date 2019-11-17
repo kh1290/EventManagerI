@@ -100,7 +100,7 @@ public class EventModActivity extends AppCompatActivity {
 
                 new Database().updateEvent(key, event, new Database.DataStatus() {
                     @Override
-                    public void DataIsLoaded(List<Event> events, List<String> keys) {
+                    public void DataIsLoaded(List<Event> events) { //, List<String> keys
 
                     }
 
@@ -130,7 +130,7 @@ public class EventModActivity extends AppCompatActivity {
             public void onClick(View view) {
                 new Database().deleteEvent(key, new Database.DataStatus() {
                     @Override
-                    public void DataIsLoaded(List<Event> events, List<String> keys) {
+                    public void DataIsLoaded(List<Event> events) { //, List<String> keys
 
                     }
 

@@ -182,7 +182,7 @@ public class NewEventActivity extends AppCompatActivity {
 
                 new Database().addEvent(event, new Database.DataStatus() {
                     @Override
-                    public void DataIsLoaded(List<Event> events, List<String> keys) {
+                    public void DataIsLoaded(List<Event> events) { //, List<String> keys
 
                     }
 

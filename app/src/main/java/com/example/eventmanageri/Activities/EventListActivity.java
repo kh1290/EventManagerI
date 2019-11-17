@@ -1,25 +1,48 @@
 package com.example.eventmanageri.Activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.eventmanageri.Adapters.EventAdapter;
 import com.example.eventmanageri.Database;
 import com.example.eventmanageri.Models.Event;
 import com.example.eventmanageri.R;
 import com.example.eventmanageri.Adapters.RecyclerView_Config;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
+import java.security.cert.PolicyNode;
+import java.util.ArrayList;
 import java.util.List;
 
 public class EventListActivity extends AppCompatActivity {
+    // UI reference
     private RecyclerView mRecyclerView;
     MaterialSearchView materialSearchView;
 
+    // Data reference
+    private String userId, share, currentUser;
+    private List<Event> events = new ArrayList<>();
+
+    // Adapter reference
+    public EventAdapter mEventAdapter;
+
+    // DB reference
+    private FirebaseDatabase mDatabase;
+    private DatabaseReference mDatabaseRef;
 
 
     @Override
@@ -27,37 +50,67 @@ public class EventListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_list);
 
-
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_events);
+        // Define UI reference
         materialSearchView = (MaterialSearchView) findViewById(R.id.searchView);
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_events);
+        mRecyclerView.setHasFixedSize(true);
 
-        // Load Events
-        new Database().readEvents(new Database.DataStatus() {
+        // Define DB reference
+        mDatabase = FirebaseDatabase.getInstance();
+        mDatabaseRef = mDatabase.getReference("events");
+        currentUser = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+
+        // List events
+        loadEvent();
+    }
+
+    // <------------------------ List ------------------------>
+    // List events
+    public void loadEvent() {
+        mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void DataIsLoaded(List<Event> events, List<String> keys) {
-                new RecyclerView_Config().setConfig(mRecyclerView,
-                        EventListActivity.this, events, keys);
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<String> keys = new ArrayList<>();
+
+                for(DataSnapshot keyNode : dataSnapshot.getChildren()){
+                    keys.add(keyNode.getKey());
+                    Event event = keyNode.getValue(Event.class);
+
+                    // Get value of share, userId to check permission
+                    share = event.getShare();
+                    userId = event.getUserId();
+
+                    // If an event is shared, then display the event
+                    if(share.equals("Yes") || userId.equals(currentUser)) {
+                        events.add(event);
+                        setUpRecyclerView();
+                    }
+                }
             }
 
             @Override
-            public void DataIsInserted() {
-
-            }
-
-            @Override
-            public void DataIsUpdated() {
-
-            }
-
-            @Override
-            public void DataIsDeleted() {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
+    }
+    public void setUpRecyclerView() {
+        mEventAdapter = new EventAdapter(events);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setAdapter(mEventAdapter);
+    }
 
+
+    // <------------------------ Menu ------------------------>
+    // Menu: "Search", "New Event"
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.eventlist_activity_menu, menu);
+        MenuItem item = menu.findItem(R.id.search_event);
+        materialSearchView.setMenuItem(item);
 
         // Search Events
-        materialSearchView.closeSearch();
+        // materialSearchView.closeSearch();
         materialSearchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -66,22 +119,14 @@ public class EventListActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(final String newText) {
-                //// add
+                final List<Event> filterList = filter(events, newText);
+                mEventAdapter.setFilter(filterList);
+
                 return false;
             }
         });
-    }
-
-
-    // Menu: "Search", "New Event"
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.eventlist_activity_menu, menu);
-        MenuItem item = menu.findItem(R.id.search_event);
-        materialSearchView.setMenuItem(item);
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
@@ -90,5 +135,20 @@ public class EventListActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    // <----------------------- Search ----------------------->
+    // Search events
+    private List<Event> filter(List<Event> pl, String query) {
+        query = query.toLowerCase();
+        final List<Event> filterList = new ArrayList<>();
+        for (Event model:pl) {
+            final String text = model.getTitle().toLowerCase();
+            if (text.startsWith(query)) {
+                filterList.add(model);
+            }
+        }
+        return filterList;
     }
 }

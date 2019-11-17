@@ -43,7 +43,7 @@ public class Database {
     }
 
     public interface DataStatus {
-        void DataIsLoaded(List<Event> events, List<String> keys);
+        void DataIsLoaded(List<Event> events); //, List<String> keys
         void DataIsInserted();
         void DataIsUpdated();
         void DataIsDeleted();
@@ -80,10 +80,7 @@ public class Database {
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                events.clear();
                 List<String> keys = new ArrayList<>();
-
-                //new RecyclerView_Config.EventsAdapter(events, keys);
 
                 for(DataSnapshot keyNode : dataSnapshot.getChildren()){
                     keys.add(keyNode.getKey());
@@ -93,12 +90,10 @@ public class Database {
 
                     // If an event is shared, then display the event
                     if(share.equals("Yes") || userId.equals(currentUser)) {
-                        //RecyclerView_Config test = new RecyclerView_Config();
-                        //test.mEventsAdapter.getFilter().filter(query);
                         events.add(event);
                     }
                 }
-                dataStatus.DataIsLoaded(events,keys);
+                dataStatus.DataIsLoaded(events);
             }
 
             @Override

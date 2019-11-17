@@ -27,12 +27,11 @@ import com.google.firebase.auth.FirebaseAuth;
 public class RecyclerView_Config {
     private Context mContext;
     public EventsAdapter mEventsAdapter;
-    private String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
-    public void setConfig(RecyclerView recyclerView, Context context, List<Event> events, List<String> keys) {
+    public void setConfig(RecyclerView recyclerView, Context context, List<Event> events) { // , List<String> keys
         mContext = context;
-        mEventsAdapter = new EventsAdapter(events, keys);
+        mEventsAdapter = new EventsAdapter(events); // , keys
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(mEventsAdapter);
     }
@@ -60,7 +59,7 @@ public class RecyclerView_Config {
 
                     // Put Data to EventViewActivity
                     Intent intent = new Intent(mContext, EventViewActivity.class);
-                    intent.putExtra("key",key);
+                    // intent.putExtra("key",key);
                     intent.putExtra("eventid",mEventId);
                     intent.putExtra("userid",mUserId);
                     intent.putExtra("title",mTitle.getText().toString());
@@ -71,14 +70,13 @@ public class RecyclerView_Config {
                     intent.putExtra("video",mVideo.getText().toString());
                     intent.putExtra("location",mLocation.getText().toString());
                     intent.putExtra("share",mShare.getText().toString());
-
                     mContext.startActivity(intent);
                 }
             });
         }
 
         // Event items (for EventListActivity)
-        public void bind(Event event, String key) {
+        public void bind(Event event) { //, String key
                 mEventId = event.getEventId();
                 mUserId = event.getUserId();
                 mTitle.setText(event.getTitle());
@@ -92,16 +90,12 @@ public class RecyclerView_Config {
         }
     }
 
-    class EventsAdapter extends RecyclerView.Adapter<EventItemView> implements Filterable {
+    public class EventsAdapter extends RecyclerView.Adapter<EventItemView> implements Filterable {
         private List<Event> mEventList;
-        private List<String> mKeys;
-        // add
         private List<Event> mEventListFull;
 
-        public EventsAdapter(List<Event> mEventList, List<String> mKeys) {
+        public EventsAdapter(List<Event> mEventList) { // , List<String> mKeys
             this.mEventList = mEventList;
-            this.mKeys = mKeys;
-            // add
             mEventListFull = new ArrayList<>(mEventList);
         }
 
@@ -113,7 +107,7 @@ public class RecyclerView_Config {
 
         @Override
         public void onBindViewHolder(@NonNull EventItemView holder, int position) {
-            holder.bind(mEventList.get(position), mKeys.get(position));
+            holder.bind(mEventList.get(position)); // , mKeys.get(position)
         }
 
         @Override
@@ -126,7 +120,6 @@ public class RecyclerView_Config {
         public Filter getFilter() {
             return eventFilter;
         }
-
         private Filter eventFilter = new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
@@ -154,7 +147,6 @@ public class RecyclerView_Config {
                 mEventListFull.clear();
                 mEventListFull.addAll((Collection<? extends Event>) results.values);
                 notifyDataSetChanged();
-
             }
         };
     }

@@ -7,12 +7,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.renderscript.Sampler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,19 +38,23 @@ import java.util.Locale;
 
 public class EventViewActivity extends AppCompatActivity {
 
-    private TextView mTitle_viewTxt, mUser_viewTxt, mDate_viewTxt, mMemo_viewTxt, mPhoto_viewTxt,
+    private TextView textViewRate, mTitle_viewTxt, mUser_viewTxt, mDate_viewTxt, mMemo_viewTxt, mPhoto_viewTxt,
             mVideo_viewTxt, mLocation_viewTxt, mType_viewTxt;
     // private ImageView mPhoto_imgView;
 
-    private String key, eventid, userid, title, date, memo, photo,
+    private String message, key, eventid, userid, title, date, memo, photo,
             video, location, share, type, uId, uDisplayName;
     private EditText mComment;
-    private Button mBtnUpdate, mBtnAddComment;
+    private Button mBtnUpdate, mBtnAddComment, mBtnRate;
     private FirebaseDatabase mDatabase;
     private FirebaseUser mUser;
+    private RatingBar ratingRatingBar;
     RecyclerView RvComment;
     List<Comment> listComment;
     CommentAdapter commentAdapter;
+
+
+
 
 
     @Override
@@ -70,6 +74,10 @@ public class EventViewActivity extends AppCompatActivity {
         mComment = (EditText) findViewById(R.id.comment_editView);
         mBtnUpdate = (Button) findViewById(R.id.btnUpdate);
         mBtnAddComment = (Button) findViewById(R.id.btnAddComment);
+        ratingRatingBar = (RatingBar) findViewById(R.id.ratingBar4);
+        mBtnRate = (Button)findViewById(R.id.button2);
+        final TextView ratingDisplayTextView = (TextView)findViewById(R.id.textViewRate);
+
 
         mDatabase = FirebaseDatabase.getInstance();
         mUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -97,6 +105,16 @@ public class EventViewActivity extends AppCompatActivity {
         mPhoto_viewTxt.setText(photo);
         mVideo_viewTxt.setText(video);
         mLocation_viewTxt.setText(location);
+
+        // Edit Event : "Rate" Button
+        mBtnRate.setOnClickListener(new View.OnClickListener() {
+               @Override
+                public void onClick(View v) {
+
+                    ratingDisplayTextView.setText("Your rating is:"+ratingRatingBar.getRating());
+
+                }
+            });
 
         // Edit Event : "Comment" Button
         mBtnAddComment.setOnClickListener(new View.OnClickListener() {
@@ -200,5 +218,6 @@ public class EventViewActivity extends AppCompatActivity {
         return commentDate;
     }
 
-}
+    //
 
+}

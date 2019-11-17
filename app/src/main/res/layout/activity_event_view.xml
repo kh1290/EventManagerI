@@ -86,33 +86,43 @@
                 android:hint="Decription" />
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="401dp"
                 android:layout_height="50dp"
                 android:layout_centerHorizontal="true"
                 android:orientation="horizontal">
 
                 <RatingBar
                     android:id="@+id/ratingBar4"
-                    android:layout_width="wrap_content"
+                    android:layout_width="240dp"
                     android:layout_height="wrap_content"
-                    android:numStars="5"
-                    android:scrollbarSize="3dp"
-                    android:stepSize="0.1"
-                    style="?android:attr/ratingBarStyleIndicator"
-                    android:layout_marginStart="128dp"
+                    android:layout_marginStart="0.2dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="10dp"
-                    android:layout_marginRight="10dp" />
+                    android:layout_marginRight="0.2dp"
+                    android:numStars="5"
+                    android:stepSize="1" />
 
                 <Button
                     android:id="@+id/button2"
-                    android:layout_width="70dp"
-                    android:layout_height="40dp"
-                    android:layout_marginStart="10dp"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="0.2dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="10dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="0.2dp"
                     android:text="RATE" />
+
+                <TextView
+                    android:id="@+id/textViewRate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="0.2dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginEnd="2dp"
+                    android:layout_marginRight="0.2dp"
+                    android:layout_weight="1"
+                    android:text="Your rating" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -143,6 +153,7 @@
                     android:text="add" />
 
             </LinearLayout>
+
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView

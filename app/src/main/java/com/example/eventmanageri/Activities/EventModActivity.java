@@ -16,31 +16,27 @@ import com.example.eventmanageri.Models.Event;
 import com.example.eventmanageri.R;
 
 import java.util.List;
+import com.example.eventmanageri.Activities.CalendarActivity.ActivityConstants;
 
 public class EventModActivity extends AppCompatActivity {
 
-    // UI references
-    private EditText mTitle_editTxt, mMemo_editTxt,
-            mPhoto_editTxt, mVideo_editTxt, mLocation_editTxt;
+    // UI reference
+    private EditText mTitle_editTxt, mMemo_editTxt, mPhoto_editTxt,
+            mVideo_editTxt, mLocation_editTxt;
     private TextView mDate_viewTxt;
     private Spinner mType_sp, mShare_sp;
     private Button mBtnDate, mBtnUpdate, mBtnDelete, mBtnCancel;
 
-    // Data references
+    // Data reference
     private String key, userid, title, date, memo, type, photo, video, location, share;
 
-    // Choose Date
-    private void chooseDate() {
-        Intent intent = new Intent(EventModActivity.this, CalendarActivity.class);
-        startActivity(intent);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_mod);
 
-        // Define UI references
+        // Define UI reference
         mTitle_editTxt = (EditText) findViewById(R.id.title_editTxt);
         mDate_viewTxt = (TextView) findViewById(R.id.date_viewTxt);
         mMemo_editTxt = (EditText) findViewById(R.id.memo_editTxt);
@@ -78,7 +74,7 @@ public class EventModActivity extends AppCompatActivity {
 
 
         // <------------------------ Button ------------------------>
-        // Choose Event Date : "CHOOSE DATE" Button
+        // "CHOOSE DATE" Button : Choose the date
         mBtnDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,12 +82,11 @@ public class EventModActivity extends AppCompatActivity {
             }
         });
 
-        // Update Event : "UPDATE" Button
+        // "UPDATE" Button : Update the event
         mBtnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Event event = new Event();
-
                 event.setEventId(key);
                 event.setUserId(userid);
                 event.setTitle(mTitle_editTxt.getText().toString());
@@ -129,7 +124,7 @@ public class EventModActivity extends AppCompatActivity {
             }
         });
 
-        // Delete Event : "DELETE" Button
+        // "DELETE" Button : Delete the event
         mBtnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -159,7 +154,7 @@ public class EventModActivity extends AppCompatActivity {
             }
         });
 
-        // Cancel : "CANCEL" Button (Back to the event lists)
+        // "CANCEL" Button : Back to the event lists
         mBtnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -168,6 +163,23 @@ public class EventModActivity extends AppCompatActivity {
         });
     }
 
+    // <------------------------ Function ------------------------>
+    // Choose Date
+    private void chooseDate() {
+        // Put data to CalendarActivity
+        Intent intent = new Intent(EventModActivity.this, CalendarActivity.class);
+        intent.putExtra("calling-activity",ActivityConstants.ACTIVITY_2);
+        intent.putExtra("title",mTitle_editTxt.getText().toString());
+        intent.putExtra("memo",mMemo_editTxt.getText().toString());
+        intent.putExtra("photo",mPhoto_editTxt.getText().toString());
+        intent.putExtra("video",mVideo_editTxt.getText().toString());
+        intent.putExtra("location",mLocation_editTxt.getText().toString());
+        intent.putExtra("type",mType_sp.getSelectedItem().toString());
+        intent.putExtra("share",mShare_sp.getSelectedItem().toString());
+        startActivity(intent);
+    }
+
+    // Get spinner value
     private int getIndex_SpinnerItem(Spinner spinner, String item) {
         int index = 0;
         for (int i = 0; i<spinner.getCount(); i++) {
@@ -179,7 +191,7 @@ public class EventModActivity extends AppCompatActivity {
         return index;
     }
 
-    // Go to Event Lists
+    // Go to EventListActivity
     private void goToList() {
         Intent goToList = new Intent(EventModActivity.this, EventListActivity.class);
         startActivity(goToList);

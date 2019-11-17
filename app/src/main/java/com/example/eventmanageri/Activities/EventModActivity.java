@@ -16,6 +16,7 @@ import com.example.eventmanageri.Models.Event;
 import com.example.eventmanageri.R;
 
 import java.util.List;
+import com.example.eventmanageri.Activities.CalendarActivity.ActivityConstants;
 
 public class EventModActivity extends AppCompatActivity {
 
@@ -167,6 +168,7 @@ public class EventModActivity extends AppCompatActivity {
     private void chooseDate() {
         // Put data to CalendarActivity
         Intent intent = new Intent(EventModActivity.this, CalendarActivity.class);
+        intent.putExtra("calling-activity",ActivityConstants.ACTIVITY_2);
         intent.putExtra("title",mTitle_editTxt.getText().toString());
         intent.putExtra("memo",mMemo_editTxt.getText().toString());
         intent.putExtra("photo",mPhoto_editTxt.getText().toString());

@@ -27,7 +27,8 @@ import com.squareup.picasso.Picasso;
 import android.content.ContentResolver;
 
 import java.util.List;
-import android.content.Context;
+import android.content.Context;import com.example.eventmanageri.Activities.CalendarActivity.ActivityConstants;
+
 
 public class NewEventActivity extends AppCompatActivity {
 
@@ -240,6 +241,7 @@ public class NewEventActivity extends AppCompatActivity {
     private void chooseDate() {
         // Put data to CalendarActivity
         Intent intent = new Intent(NewEventActivity.this, CalendarActivity.class);
+        intent.putExtra("calling-activity",ActivityConstants.ACTIVITY_1);
         intent.putExtra("title",mTitle_editTxt.getText().toString());
         intent.putExtra("memo",mMemo_editTxt.getText().toString());
         intent.putExtra("photo",mPhoto_editTxt.getText().toString());
@@ -247,7 +249,7 @@ public class NewEventActivity extends AppCompatActivity {
         intent.putExtra("location",mLocation_editTxt.getText().toString());
         intent.putExtra("type",mType_sp.getSelectedItem().toString());
         intent.putExtra("share",mShare_sp.getSelectedItem().toString());
-        startActivity(intent);
+        startActivityForResult(intent,1001);
     }
 
     // Get spinner value

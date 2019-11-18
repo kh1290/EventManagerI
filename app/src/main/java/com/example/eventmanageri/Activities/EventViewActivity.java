@@ -7,17 +7,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.eventmanageri.Adapters.CommentAdapter;
 import com.example.eventmanageri.Models.Comment;
+import com.example.eventmanageri.Models.Event;
 import com.example.eventmanageri.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -28,6 +31,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -38,23 +42,24 @@ import java.util.Locale;
 
 public class EventViewActivity extends AppCompatActivity {
 
-    private TextView textViewRate, mTitle_viewTxt, mUser_viewTxt, mDate_viewTxt, mMemo_viewTxt, mPhoto_viewTxt,
+    // UI reference
+    private TextView textViewRate, mTitle_viewTxt, mUser_viewTxt, mDate_viewTxt, mMemo_viewTxt,
             mVideo_viewTxt, mLocation_viewTxt, mType_viewTxt;
-    // private ImageView mPhoto_imgView;
-
-    private String message, key, eventid, userid, title, date, memo, photo,
-            video, location, share, type, uId, uDisplayName;
     private EditText mComment;
-    private Button mBtnUpdate, mBtnAddComment, mBtnRate;
-    private FirebaseDatabase mDatabase;
-    private FirebaseUser mUser;
+    private ImageView mPhoto_imgView;
     private RatingBar ratingRatingBar;
+    private Button mBtnUpdate, mBtnAddComment, mBtnRate;
     RecyclerView RvComment;
-    List<Comment> listComment;
     CommentAdapter commentAdapter;
 
+    // Data reference
+    private String message, key, eventid, userid, title, date, memo, photo,
+            video, location, share, type, uId, uDisplayName;
+    List<Comment> listComment;
 
-
+    // firebase reference
+    private FirebaseDatabase mDatabase;
+    private FirebaseUser mUser;
 
 
     @Override
@@ -62,29 +67,32 @@ public class EventViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_view);
 
+        // Define UI reference
         RvComment = findViewById(R.id.rv_comment);
         mTitle_viewTxt = (TextView) findViewById(R.id.title_textView);
         mUser_viewTxt = (TextView) findViewById(R.id.user_viewTxt);
         mDate_viewTxt = (TextView) findViewById(R.id.date_viewTxt);
         mMemo_viewTxt = (TextView) findViewById(R.id.memo_txtView);
         mType_viewTxt = (TextView) findViewById(R.id.type_txtView);
-        mPhoto_viewTxt = (TextView) findViewById(R.id.Photo_txtView);
         mVideo_viewTxt = (TextView) findViewById(R.id.Video_txtView);
         mLocation_viewTxt = (TextView) findViewById(R.id.Location_txtView);
         mComment = (EditText) findViewById(R.id.comment_editView);
+        mPhoto_imgView = (ImageView) findViewById(R.id.photoDetail_imgView);
         mBtnUpdate = (Button) findViewById(R.id.btnUpdate);
         mBtnAddComment = (Button) findViewById(R.id.btnAddComment);
         ratingRatingBar = (RatingBar) findViewById(R.id.ratingBar4);
         mBtnRate = (Button)findViewById(R.id.button2);
-        final TextView ratingDisplayTextView = (TextView)findViewById(R.id.textViewRate);
+        final TextView ratingDisplayTextView = (TextView) findViewById(R.id.textViewRate);
 
-
+        // Define firebase reference
         mDatabase = FirebaseDatabase.getInstance();
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         uId = mUser.getUid();
         uDisplayName = mUser.getDisplayName();
 
 
+        // <------------------------ Data ------------------------>
+        // Get data from EventListActivity
         key = getIntent().getStringExtra("key");
         eventid = getIntent().getStringExtra("eventid");
         userid = getIntent().getStringExtra("userid");
@@ -97,30 +105,35 @@ public class EventViewActivity extends AppCompatActivity {
         share = getIntent().getStringExtra("share");
         type = getIntent().getStringExtra("type");
 
+        // Set data to display
         mTitle_viewTxt.setText(title);
         mUser_viewTxt.setText(userid);
         mDate_viewTxt.setText(date);
         mMemo_viewTxt.setText(memo);
         mType_viewTxt.setText(type);
-        mPhoto_viewTxt.setText(photo);
         mVideo_viewTxt.setText(video);
         mLocation_viewTxt.setText(location);
+        if (photo != "NONE") {
+            // If there is photo, get image from url
+            Picasso.get().load(photo).into(mPhoto_imgView);
+        }
 
-        // Edit Event : "Rate" Button
+
+        // <------------------------ Button ------------------------>
+        // "Rate" Button : Rate an event
         mBtnRate.setOnClickListener(new View.OnClickListener() {
-               @Override
+                @Override
                 public void onClick(View v) {
 
                     ratingDisplayTextView.setText("Your rating is:"+ratingRatingBar.getRating());
 
                 }
-            });
+        });
 
-        // Edit Event : "Comment" Button
+        // "Comment" Button : Put new comment
         mBtnAddComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 mBtnAddComment.setVisibility(View.INVISIBLE);
                 DatabaseReference commentRef = mDatabase.getReference("comment").child(eventid).push();
                 String comment_content = mComment.getText().toString();
@@ -141,22 +154,18 @@ public class EventViewActivity extends AppCompatActivity {
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(EventViewActivity.this,"Unsuccessful",
                                 Toast.LENGTH_SHORT).show();
-
                     }
                 });
-
             }
         });
-
         iniRvComment();
-
     }
 
+    // <------------------------ Function ------------------------>
     private void iniRvComment() {
         RvComment.setLayoutManager(new LinearLayoutManager(this));
 
         DatabaseReference commentRefence = mDatabase.getReference("comment").child(eventid);
-        //ValueEventListener valueEventListener =
         commentRefence.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -178,6 +187,14 @@ public class EventViewActivity extends AppCompatActivity {
         });
     }
 
+    private String timestampToString(long time) {
+        Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
+        calendar.setTimeInMillis(time);
+        String commentDate = DateFormat.getDateInstance().toString();
+        return commentDate;
+    }
+
+    // <------------------------ Menu ------------------------>
     // Menu: "Update"
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -189,7 +206,9 @@ public class EventViewActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.update_event:
-                if (uDisplayName.equals(userid)) {
+                // Check if the user have the right permission
+                if (uDisplayName.equals(userid) || uDisplayName.equals("Admin")) {
+                    // put data to EventModActivity
                     Intent intent = new Intent(EventViewActivity.this, EventModActivity.class);
                     intent.putExtra("key",eventid);
                     intent.putExtra("userid",userid);
@@ -197,7 +216,7 @@ public class EventViewActivity extends AppCompatActivity {
                     intent.putExtra("type",mType_viewTxt.getText().toString());
                     intent.putExtra("date",mDate_viewTxt.getText().toString());
                     intent.putExtra("memo",mMemo_viewTxt.getText().toString());
-                    intent.putExtra("photo",mPhoto_viewTxt.getText().toString());
+                    intent.putExtra("photo",photo);
                     intent.putExtra("video",mVideo_viewTxt.getText().toString());
                     intent.putExtra("location",mLocation_viewTxt.getText().toString());
                     intent.putExtra("share",share);
@@ -210,14 +229,4 @@ public class EventViewActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-    private String timestampToString(long time) {
-        Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
-        calendar.setTimeInMillis(time);
-        String commentDate = DateFormat.getDateInstance().toString();
-        return commentDate;
-    }
-
-    //
-
 }

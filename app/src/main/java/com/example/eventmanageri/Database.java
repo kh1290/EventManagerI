@@ -3,7 +3,6 @@ package com.example.eventmanageri;
 import androidx.annotation.NonNull;
 import java.util.List;
 
-import com.example.eventmanageri.Adapters.RecyclerView_Config;
 import com.example.eventmanageri.Models.Event;
 import com.example.eventmanageri.Models.User;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -29,14 +28,12 @@ public class Database {
     private FirebaseStorage mStorage;
     private StorageReference mStoragePhotoRef;
     private StorageReference mStorageVideoRef;
-    private StorageTask mUpPhoto;
 
     // Events
     private List<Event> events = new ArrayList<>();
     private String currentUser = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
     private String userId, share;
 
-//    private RecyclerView_Config.EventsAdapter adapter;
 
     public interface UserStatus {
         void UserIsInserted();
@@ -125,13 +122,7 @@ public class Database {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        //userId = event.getUserId();
-                        //Log.d("Database", "aaa userId value :" + userId);
-                        //Log.d("Database", "aaa currentUser value :" + currentUser);
-
-                        //if(currentUser.equals(userId)) {
                             dataStatus.DataIsUpdated();
-                        //}
                     }
                 });
     }

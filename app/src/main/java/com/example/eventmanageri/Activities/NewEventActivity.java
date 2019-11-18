@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.provider.MediaStore;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.EditText;
@@ -15,20 +15,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.net.Uri;
 import android.content.ContentResolver;
+import android.widget.VideoView;
 
 import com.example.eventmanageri.Activities.CalendarActivity.ActivityConstants;
 import com.example.eventmanageri.Database;
 import com.example.eventmanageri.Models.Event;
 import com.example.eventmanageri.R;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.util.HashMap;
 import java.util.List;
 
 
@@ -38,6 +37,7 @@ public class NewEventActivity extends AppCompatActivity {
     private EditText mTitle_editTxt, mMemo_editTxt, mVideo_editTxt, mLocation_editTxt;
     private TextView mDate_viewTxt;
     private ImageView mPhoto_imgView;
+    private VideoView mVideo_videoView;
     private Spinner mType_sp, mShare_sp;
     private Button mBtnDate, mBtnUpPhoto, mBtnUpVideo, mBtnAdd, mBtnCancel;
 
@@ -45,14 +45,16 @@ public class NewEventActivity extends AppCompatActivity {
     private String title, date, type, memo, photo, photoUrl, video, location, share;
 
     // Photo reference
-    private Uri mPhotoUri;
+    private Uri mPhotoUri, mVideoUri;
     private static final int PICK_Photo_Request = 1;
+    private static final int PICK_Video_Request = 2;
+
 
     // firebase reference
     private FirebaseDatabase mDatabase;
     private DatabaseReference mDatabaseRef;
     private FirebaseStorage mStorage;
-    private StorageReference mStorageRef;
+    private StorageReference mStoragePhotoRef, mStorageVideoRef;
 
 
     @Override
@@ -66,6 +68,7 @@ public class NewEventActivity extends AppCompatActivity {
         mMemo_editTxt = (EditText) findViewById(R.id.memo_editTxt);
         mPhoto_imgView = (ImageView) findViewById(R.id.photo_imgView);
         mVideo_editTxt = (EditText) findViewById(R.id.video_editTxt);
+        mVideo_videoView = (VideoView) findViewById(R.id.video_videoView);
         mLocation_editTxt = (EditText) findViewById(R.id.location_editTxt);
         mType_sp = (Spinner) findViewById(R.id.type_sp);
         mShare_sp = (Spinner) findViewById(R.id.share_sp);
@@ -79,7 +82,8 @@ public class NewEventActivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance();
         mDatabaseRef = mDatabase.getReference("events");
         mStorage = FirebaseStorage.getInstance();
-        mStorageRef = mStorage.getReference("photo");
+        mStoragePhotoRef = mStorage.getReference("photo");
+        mStorageVideoRef = mStorage.getReference("video");
 
 
         // <------------------------ Data ------------------------>
@@ -121,6 +125,14 @@ public class NewEventActivity extends AppCompatActivity {
             }
         });
 
+        // "VIDEO" Button : Choose video to upload
+        mBtnUpVideo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chooseVideo();
+            }
+        });
+
         // "CANCEL" Button : Back to the event lists
         mBtnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,65 +158,120 @@ public class NewEventActivity extends AppCompatActivity {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, PICK_Photo_Request);
     }
+    // Choose Video
+    private void chooseVideo() {
+        Intent intent = new Intent();
+        intent.setType("video/*");
+        intent.setAction(MediaStore.ACTION_VIDEO_CAPTURE);
+        startActivityForResult(intent, PICK_Video_Request);
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == PICK_Photo_Request) {
-            // The user has picked an photo successfully
+        if (requestCode == PICK_Photo_Request && resultCode == RESULT_OK) {
+            // The user has picked a photo successfully
             // Save its reference to a Uri variable
             mPhotoUri = data.getData();
             mPhoto_imgView.setImageURI(mPhotoUri);
+
+        } else if (requestCode == PICK_Video_Request && resultCode == RESULT_OK) {
+            // The user has picked a video successfully
+            mVideoUri = data.getData();
         }
     }
 
     // Create new event
     private void newEvent() {
         // Upload a file to storage with random name
-        final StorageReference PhotoRef = mStorageRef.child(System.currentTimeMillis() + "." +
-                getFileExtension(mPhotoUri));
-        PhotoRef.putFile(mPhotoUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // Photo uploaded successfully
-                // Get the url
-                photoUrl = taskSnapshot.getUploadSessionUri().toString();
+        if (mPhotoUri == null) {
+            // If the user does not pick photo, set "null" to "photo" on firebase
+            Event event = new Event();
+            event.setTitle(mTitle_editTxt.getText().toString());
+            event.setDate(mDate_viewTxt.getText().toString());
+            event.setMemo(mMemo_editTxt.getText().toString());
+            event.setPhoto("NONE");
+            event.setVideo(mVideo_editTxt.getText().toString());
+            event.setLocation(mLocation_editTxt.getText().toString());
+            event.setType(mType_sp.getSelectedItem().toString());
+            event.setShare(mShare_sp.getSelectedItem().toString());
 
-                Event event = new Event();
-                event.setTitle(mTitle_editTxt.getText().toString());
-                event.setDate(mDate_viewTxt.getText().toString());
-                event.setMemo(mMemo_editTxt.getText().toString());
-                event.setPhoto(photoUrl);
-                event.setVideo(mVideo_editTxt.getText().toString());
-                event.setLocation(mLocation_editTxt.getText().toString());
-                event.setType(mType_sp.getSelectedItem().toString());
-                event.setShare(mShare_sp.getSelectedItem().toString());
+            new Database().addEvent(event, new Database.DataStatus() {
+                @Override
+                public void DataIsLoaded(List<Event> events) { //, List<String> keys
 
-                new Database().addEvent(event, new Database.DataStatus() {
-                    @Override
-                    public void DataIsLoaded(List<Event> events) { //, List<String> keys
+                }
 
-                    }
+                @Override
+                public void DataIsInserted() {
 
-                    @Override
-                    public void DataIsInserted() {
+                    Toast.makeText(NewEventActivity.this, "The event has been " +
+                            "saved successfully", Toast.LENGTH_LONG).show();
+                }
 
-                        Toast.makeText(NewEventActivity.this, "The event has been " +
-                                "saved successfully", Toast.LENGTH_LONG).show();
-                    }
+                @Override
+                public void DataIsUpdated() {
 
-                    @Override
-                    public void DataIsUpdated() {
+                }
 
-                    }
+                @Override
+                public void DataIsDeleted() {
 
-                    @Override
-                    public void DataIsDeleted() {
+                }
+            });
 
-                    }
-                });
-            }
-        });
+        } else {
+            // If the user picks photo, set url to "photo" on firebase
+            final StorageReference PhotoRef = mStoragePhotoRef.child(System.currentTimeMillis() + "." +
+                    getFileExtension(mPhotoUri));
+            PhotoRef.putFile(mPhotoUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // Photo uploaded successfully
+                    // Get download url
+                    PhotoRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            photoUrl = uri.toString();
+
+                            Event event = new Event();
+                            event.setTitle(mTitle_editTxt.getText().toString());
+                            event.setDate(mDate_viewTxt.getText().toString());
+                            event.setMemo(mMemo_editTxt.getText().toString());
+                            event.setPhoto(photoUrl);
+                            event.setVideo(mVideo_editTxt.getText().toString());
+                            event.setLocation(mLocation_editTxt.getText().toString());
+                            event.setType(mType_sp.getSelectedItem().toString());
+                            event.setShare(mShare_sp.getSelectedItem().toString());
+
+                            new Database().addEvent(event, new Database.DataStatus() {
+                                @Override
+                                public void DataIsLoaded(List<Event> events) { //, List<String> keys
+
+                                }
+
+                                @Override
+                                public void DataIsInserted() {
+
+                                    Toast.makeText(NewEventActivity.this, "The event has been " +
+                                            "saved successfully", Toast.LENGTH_LONG).show();
+                                }
+
+                                @Override
+                                public void DataIsUpdated() {
+
+                                }
+
+                                @Override
+                                public void DataIsDeleted() {
+
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }
     }
     private String getFileExtension(Uri uri) {
         ContentResolver Cr = getContentResolver();
@@ -219,6 +286,7 @@ public class NewEventActivity extends AppCompatActivity {
         intent.putExtra("calling-activity",ActivityConstants.ACTIVITY_1);
         intent.putExtra("title",mTitle_editTxt.getText().toString());
         intent.putExtra("memo",mMemo_editTxt.getText().toString());
+        intent.putExtra("photo",photo);
         intent.putExtra("video",mVideo_editTxt.getText().toString());
         intent.putExtra("location",mLocation_editTxt.getText().toString());
         intent.putExtra("type",mType_sp.getSelectedItem().toString());

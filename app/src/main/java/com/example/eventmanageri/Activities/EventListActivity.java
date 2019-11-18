@@ -5,18 +5,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.eventmanageri.Adapters.EventAdapter;
-import com.example.eventmanageri.Database;
 import com.example.eventmanageri.Models.Event;
 import com.example.eventmanageri.R;
-import com.example.eventmanageri.Adapters.RecyclerView_Config;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -24,9 +22,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
-import java.security.cert.PolicyNode;
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class EventListActivity extends AppCompatActivity {
     // UI reference
@@ -34,7 +32,7 @@ public class EventListActivity extends AppCompatActivity {
     MaterialSearchView materialSearchView;
 
     // Data reference
-    private String userId, share, currentUser;
+    private String userId, share, uDisplayName;
     private List<Event> events = new ArrayList<>();
 
     // Adapter reference
@@ -43,6 +41,7 @@ public class EventListActivity extends AppCompatActivity {
     // DB reference
     private FirebaseDatabase mDatabase;
     private DatabaseReference mDatabaseRef;
+    private FirebaseUser mUser;
 
 
     @Override
@@ -58,7 +57,8 @@ public class EventListActivity extends AppCompatActivity {
         // Define DB reference
         mDatabase = FirebaseDatabase.getInstance();
         mDatabaseRef = mDatabase.getReference("events");
-        currentUser = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
+        uDisplayName = mUser.getDisplayName();
 
         // List events
         loadEvent();
@@ -70,9 +70,11 @@ public class EventListActivity extends AppCompatActivity {
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                events.clear();
                 List<String> keys = new ArrayList<>();
 
                 for(DataSnapshot keyNode : dataSnapshot.getChildren()){
+
                     keys.add(keyNode.getKey());
                     Event event = keyNode.getValue(Event.class);
 
@@ -80,8 +82,9 @@ public class EventListActivity extends AppCompatActivity {
                     share = event.getShare();
                     userId = event.getUserId();
 
-                    // If an event is shared, then display the event
-                    if(share.equals("Yes") || userId.equals(currentUser)) {
+                    // If an event is shared or the user is the owner or Admin
+                    // then display the event
+                    if(share.equals("Yes") || uDisplayName.equals(userId) || uDisplayName.equals("Admin")) {
                         events.add(event);
                         setUpRecyclerView();
                     }
@@ -132,6 +135,9 @@ public class EventListActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.new_event:
                 startActivity(new Intent(this, NewEventActivity.class));
+                return true;
+            case R.id.home:
+                startActivity(new Intent(this, HomeBarActivity.class));
                 return true;
         }
         return super.onOptionsItemSelected(item);

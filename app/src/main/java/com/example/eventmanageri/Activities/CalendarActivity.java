@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.CalendarView;
 import android.content.Intent;
 
@@ -15,7 +16,7 @@ public class CalendarActivity extends AppCompatActivity {
     private CalendarView mCalendarView;
 
     // Data reference
-    private String title, date, type, memo, photo, video, location, share;
+    private String key, userid, title, date, type, memo, photo, video, location, share;
 
     // Activity reference
     public interface ActivityConstants {
@@ -32,6 +33,8 @@ public class CalendarActivity extends AppCompatActivity {
         mCalendarView = (CalendarView) findViewById(R.id.calendarView);
 
         // Get data from the calling activity
+        key = getIntent().getStringExtra("key");
+        userid = getIntent().getStringExtra("userid");
         title = getIntent().getStringExtra("title");
         memo = getIntent().getStringExtra("memo");
         photo = getIntent().getStringExtra("photo");
@@ -39,6 +42,7 @@ public class CalendarActivity extends AppCompatActivity {
         location = getIntent().getStringExtra("location");
         type = getIntent().getStringExtra("type");
         share = getIntent().getStringExtra("share");
+        Log.d("CalendarActivity", "sss View key value (photo - calendar 222):" + photo);
 
         // Pick date
         mCalendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
@@ -67,6 +71,8 @@ public class CalendarActivity extends AppCompatActivity {
     private void goToNewEvent() {
         Intent intent = new Intent(CalendarActivity.this, NewEventActivity.class);
         intent.putExtra("date", date);
+        intent.putExtra("key", key);
+        intent.putExtra("userid", userid);
         intent.putExtra("title", title);
         intent.putExtra("memo", memo);
         intent.putExtra("photo", photo);
@@ -81,6 +87,8 @@ public class CalendarActivity extends AppCompatActivity {
     private void goToEventMod() {
         Intent intent = new Intent(CalendarActivity.this, EventModActivity.class);
         intent.putExtra("date", date);
+        intent.putExtra("key", key);
+        intent.putExtra("userid", userid);
         intent.putExtra("title", title);
         intent.putExtra("memo", memo);
         intent.putExtra("photo", photo);

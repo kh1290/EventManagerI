@@ -1,10 +1,5 @@
 package com.example.eventmanageri.Activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,9 +13,13 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.eventmanageri.Adapters.CommentAdapter;
 import com.example.eventmanageri.Models.Comment;
-import com.example.eventmanageri.Models.Event;
 import com.example.eventmanageri.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -35,8 +34,8 @@ import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 
@@ -121,14 +120,38 @@ public class EventViewActivity extends AppCompatActivity {
 
         // <------------------------ Button ------------------------>
         // "Rate" Button : Rate an event
+
         mBtnRate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    mBtnRate.setVisibility(View.INVISIBLE);
+                    DatabaseReference ratingRef = mDatabase.getReference("rate").child(eventid).push();
+                    String rating_content = String.valueOf(ratingRatingBar.getRating());
+                    String uid = mUser.getUid();
+                    String uname = mUser.getDisplayName();
+
+                    Log.d ("EventViewActivity", "rating bar value ssss : " + uid);
+                    Log.d ("EventViewActivity", "rating bar value ssss : " + uname);
+
 
                     ratingDisplayTextView.setText("Your rating is:"+ratingRatingBar.getRating());
+                    String test = String.valueOf(ratingRatingBar.getRating());
+                    Log.d ("EventViewActivity", "rating bar value ssss : " + test);
 
+                    /*
+                    mBtnRate.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ratingDisplayTextView.setText("Your rating is:"+ratingRatingBar.getRating());
+
+                        }
+                    });
+
+                     */
                 }
         });
+
+
 
         // "Comment" Button : Put new comment
         mBtnAddComment.setOnClickListener(new View.OnClickListener() {

@@ -1,21 +1,22 @@
 package com.example.eventmanageri.Activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.Spinner;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.net.Uri;
-import android.content.ContentResolver;
 import android.widget.VideoView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.eventmanageri.Activities.CalendarActivity.ActivityConstants;
 import com.example.eventmanageri.Database;
@@ -38,6 +39,7 @@ public class NewEventActivity extends AppCompatActivity {
     private TextView mDate_viewTxt;
     private ImageView mPhoto_imgView;
     private VideoView mVideo_videoView;
+    private MediaController mediaC;
     private Spinner mType_sp, mShare_sp;
     private Button mBtnDate, mBtnUpPhoto, mBtnUpVideo, mBtnAdd, mBtnCancel;
 
@@ -45,9 +47,8 @@ public class NewEventActivity extends AppCompatActivity {
     private String title, date, type, memo, photo, photoUrl, video, location, share;
 
     // Photo reference
-    private Uri mPhotoUri, mVideoUri;
+    private Uri mPhotoUri;
     private static final int PICK_Photo_Request = 1;
-    private static final int PICK_Video_Request = 2;
 
 
     // firebase reference
@@ -77,6 +78,9 @@ public class NewEventActivity extends AppCompatActivity {
         mBtnUpVideo = (Button) findViewById(R.id.btnUpVideo);
         mBtnAdd = (Button) findViewById(R.id.btnAdd);
         mBtnCancel = (Button) findViewById(R.id.btnCancel);
+        mediaC = new MediaController(this);
+
+
 
         // Define firebase reference
         mDatabase = FirebaseDatabase.getInstance();
@@ -125,14 +129,6 @@ public class NewEventActivity extends AppCompatActivity {
             }
         });
 
-        // "VIDEO" Button : Choose video to upload
-        mBtnUpVideo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                chooseVideo();
-            }
-        });
-
         // "CANCEL" Button : Back to the event lists
         mBtnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,12 +141,29 @@ public class NewEventActivity extends AppCompatActivity {
         mBtnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                newEvent(); goToList();
+                newEvent();
+                goToList();
             }
         });
     }
 
+    //Video
+
+            public void playVideo(View v) {
+//            String path = "android.resource://com.example.eventmanageri.Activities/"+R.raw.cloud;
+                String path = "android.resource://" + getPackageName() +"/" + R.raw.cloud;
+            Uri u = Uri.parse(path);
+
+            mVideo_videoView.setVideoURI(u);
+            mVideo_videoView.setMediaController(mediaC);
+            mediaC.setAnchorView(mVideo_videoView);
+            mVideo_videoView.start();
+            Log.d("NewEventActivity", "111111: "+mVideo_videoView);
+    }
+
+
     // <------------------------ Function ------------------------>
+
     // Choose photo
     private void choosePhoto() {
         Intent intent = new Intent();
@@ -158,13 +171,7 @@ public class NewEventActivity extends AppCompatActivity {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, PICK_Photo_Request);
     }
-    // Choose Video
-    private void chooseVideo() {
-        Intent intent = new Intent();
-        intent.setType("video/*");
-        intent.setAction(MediaStore.ACTION_VIDEO_CAPTURE);
-        startActivityForResult(intent, PICK_Video_Request);
-    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -175,11 +182,9 @@ public class NewEventActivity extends AppCompatActivity {
             mPhotoUri = data.getData();
             mPhoto_imgView.setImageURI(mPhotoUri);
 
-        } else if (requestCode == PICK_Video_Request && resultCode == RESULT_OK) {
-            // The user has picked a video successfully
-            mVideoUri = data.getData();
         }
     }
+
 
     // Create new event
     private void newEvent() {
@@ -312,3 +317,5 @@ public class NewEventActivity extends AppCompatActivity {
         startActivity(goToList);
     }
 }
+
+

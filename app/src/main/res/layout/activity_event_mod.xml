@@ -135,7 +135,8 @@
             android:layout_weight="1"
             android:background="#D30F0E0E"
             android:text="Video"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            android:onClick="playVideo" />
 
         <Button
             android:id="@+id/btnUpLocation"

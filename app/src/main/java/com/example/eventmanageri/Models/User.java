@@ -2,18 +2,20 @@ package com.example.eventmanageri.Models;
 
 public class User {
     private String key;
+    private String uname;
     private String email;
+    private String bio;
     private String role;
-    private String uid;
 
     public User() {
     }
 
-    public User(String key, String email, String role, String uid) {
+    public User(String key, String uname, String email, String bio, String role) {
         this.key = key;
+        this.uname = uname;
         this.email = email;
+        this.bio = bio;
         this.role = role;
-        this.uid = uid;
     }
 
 
@@ -25,6 +27,14 @@ public class User {
         this.key = key;
     }
 
+    public String getUname() {
+        return uname;
+    }
+
+    public void setUname(String uname) {
+        this.uname = uname;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -33,19 +43,19 @@ public class User {
         this.email = email;
     }
 
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
     public String getRole() {
         return role;
     }
 
     public void setRole(String role) {
         this.role = role;
-    }
-
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
     }
 }

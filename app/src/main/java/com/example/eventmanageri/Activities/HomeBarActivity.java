@@ -1,59 +1,34 @@
 package com.example.eventmanageri.Activities;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
+import android.view.MenuItem;
+import android.widget.TextView;
+import android.content.Intent;
 
+import com.example.eventmanageri.Fragments.ProfileFragment;
+import com.example.eventmanageri.Fragments.SearchUserFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-
-import android.view.View;
-
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
 import com.google.android.material.navigation.NavigationView;
-
-import androidx.drawerlayout.widget.DrawerLayout;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
-import com.example.eventmanageri.R;
-import android.content.Intent;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-import android.Manifest;
-import android.app.Dialog;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
-import com.bumptech.glide.Glide;
-import androidx.appcompat.app.ActionBarDrawerToggle;
+
+import com.example.eventmanageri.R;
+
+import androidx.fragment.app.Fragment;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.core.view.GravityCompat;
-import com.example.eventmanageri.Activities.HomeBarActivity;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+
 
 public class HomeBarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
+    Fragment mFragment = null;
     private static final int PReqCode = 2 ;
     private static final int REQUESCODE = 2 ;
     FirebaseUser mUser;
@@ -92,10 +67,6 @@ public class HomeBarActivity extends AppCompatActivity
         updateNavHeader();
 
 
-        // set the home fragment as the default one
-        //getSupportFragmentManager().beginTransaction().replace(R.id.container,new MainFragment()).commit();
-
-
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -116,40 +87,32 @@ public class HomeBarActivity extends AppCompatActivity
     }
 
 
-/*
-    @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
-                || super.onSupportNavigateUp();
-    }
-*/
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(MenuItem menuItem) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
+        int id = menuItem.getItemId();
 
-        if (id == R.id.nav_home) {
-            getSupportActionBar().setTitle("Home");
-            Intent GoToList = new Intent(getApplicationContext(), EventListActivity.class);
-            startActivity(GoToList);
-            /*
-        } else if (id == R.id.nav_photo) {
-            getSupportActionBar().setTitle("Photo");
-            //getSupportFragmentManager().beginTransaction().replace(R.id.container,new ProfileFragment()).commit();
-
-        } else if (id == R.id.nav_share) {
-            getSupportActionBar().setTitle("Share");
-            //getSupportFragmentManager().beginTransaction().replace(R.id.container,new SettingsFragment()).commit();
-             */
-        } else if (id == R.id.nav_signout) {
-            FirebaseAuth.getInstance().signOut();
-            Intent GoToMain = new Intent(getApplicationContext(),MainActivity.class);
-            startActivity(GoToMain);
-            finish();
+        switch (menuItem.getItemId()) {
+            case R.id.nav_home:
+                getSupportActionBar().setTitle("Home");
+                Intent GoToEventList = new Intent(getApplicationContext(), HomeEventActivity.class);
+                startActivity(GoToEventList);
+                break;
+            case R.id.nav_myprofile:
+                SharedPreferences.Editor editor = getSharedPreferences("PREFS",MODE_PRIVATE).edit();
+                editor.putString("profileid", mUser.getUid());
+                editor.apply();
+                mFragment = new ProfileFragment();
+                break;
+            case R.id.nav_signout:
+                FirebaseAuth.getInstance().signOut();
+                Intent GoToMain = new Intent(getApplicationContext(),MainActivity.class);
+                startActivity(GoToMain);
+                finish();
+                break;
         }
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

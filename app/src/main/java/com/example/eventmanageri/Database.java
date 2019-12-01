@@ -31,7 +31,7 @@ public class Database {
 
     // Events
     private List<Event> events = new ArrayList<>();
-    private String currentUser = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+    private String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
     private String userId, share;
 
 
@@ -58,11 +58,10 @@ public class Database {
 
     // UserIsInserted
     public void addUser(User user, final UserStatus userStatus) {
-        String key = mDatabaseUserRef.push().getKey();
+        String key = currentUser;
 
-        user.setKey(key);
-        user.setUid(currentUser);
         user.setRole("user");
+        user.setBio("");
 
         mDatabaseUserRef.child(key).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -103,7 +102,6 @@ public class Database {
     // DataIsInserted
     public void addEvent(Event event, final DataStatus dataStatus) {
         String key = mDatabaseRef.push().getKey();
-        String currentUser = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
 
         event.setEventId(key);
         event.setUserId(currentUser);

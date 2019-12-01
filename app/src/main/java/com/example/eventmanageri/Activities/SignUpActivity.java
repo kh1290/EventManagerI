@@ -65,6 +65,7 @@ public class SignUpActivity extends AppCompatActivity {
                                 startActivity(new Intent(SignUpActivity.this, MainActivity.class));
                                 User user = new User();
                                 user.setEmail(email);
+                                user.setUname(email);
 
                                 new Database().addUser(user, new Database.UserStatus() {
                                     @Override

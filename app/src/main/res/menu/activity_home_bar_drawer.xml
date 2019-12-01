@@ -3,33 +3,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_home"
-            android:icon="@drawable/ic_event_note_black_24dp"
-            android:title="Event List" />
-
-        <item
-            android:id="@+id/nav_signout"
-            android:icon="@drawable/ic_exit_to_app_black_24dp"
-            android:title="Sign Out" />
-    </group>
-
-    <item android:title="Communicate">
+    <item android:title="EventManagerI">
         <menu>
             <item
-                android:id="@+id/nav_photo"
-                android:icon="@drawable/ic_menu_gallery"
-                android:title="Photo" />
+                android:id="@+id/nav_myprofile"
+                android:icon="@drawable/ic_heart"
+                android:title="Profile" />
+
             <item
-                android:id="@+id/nav_video"
-                android:icon="@drawable/ic_menu_slideshow"
-                android:title="Video" />
+                android:id="@+id/nav_home"
+                android:icon="@drawable/ic_options"
+                android:title="Event List" />
+
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="@string/menu_share" />
+                android:id="@+id/nav_signout"
+                android:icon="@drawable/ic_exit_to_app_black_24dp"
+                android:title="Sign Out" />
         </menu>
     </item>
-
 </menu>

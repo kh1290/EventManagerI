@@ -3,9 +3,7 @@ package com.example.eventmanageri.Models;
 import com.google.firebase.database.ServerValue;
 
 public class Comment {
-
     private String content, uid, uname;
-    private Object timestamp;
 
 
     public Comment() {
@@ -15,18 +13,8 @@ public class Comment {
         this.content = content;
         this.uid = uid;
         this.uname = uname;
-        //this.timestamp = ServerValue.TIMESTAMP;
     }
 
-    /*
-    public Comment(String content, String uid, String uname, Object timestamp) {
-        this.content = content;
-        this.uid = uid;
-        this.uname = uname;
-        this.timestamp = timestamp;
-    }
-
-     */
 
     public String getContent() {
         return content;
@@ -52,14 +40,4 @@ public class Comment {
         this.uname = uname;
     }
 
-    /*
-    public Object getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Object timestamp) {
-        this.timestamp = timestamp;
-    }
-
-     */
 }

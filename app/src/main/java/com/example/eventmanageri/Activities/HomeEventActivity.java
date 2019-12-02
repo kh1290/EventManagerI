@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.example.eventmanageri.Fragments.EventListFragment;
+import com.example.eventmanageri.Fragments.EventSharedListFragment;
 import com.example.eventmanageri.Fragments.ProfileFragment;
 import com.example.eventmanageri.Fragments.SearchUserFragment;
 import com.example.eventmanageri.R;
@@ -64,7 +65,7 @@ public class HomeEventActivity extends AppCompatActivity {
                             break;
                         case R.id.nav_shared:
                             // Go to EventListFragment
-                            mFragment = new EventListFragment();
+                            mFragment = new EventSharedListFragment();
                             break;
                         case R.id.nav_profile:
                             // Go to ProfileFragment

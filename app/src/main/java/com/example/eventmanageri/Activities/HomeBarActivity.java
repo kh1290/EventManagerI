@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.content.Intent;
 
+import com.example.eventmanageri.Fragments.EventListFragment;
 import com.example.eventmanageri.Fragments.ProfileFragment;
 import com.example.eventmanageri.Fragments.SearchUserFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;

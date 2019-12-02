@@ -52,21 +52,10 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
-
-
         SharedPreferences prefs = getContext().getSharedPreferences("PREFS", Context.MODE_PRIVATE);
         profileid = prefs.getString("profileid", "none");
 
-        // Define DB reference
-        mDatabase = FirebaseDatabase.getInstance();
-        mDatabaseUserRef = mDatabase.getReference("users").child(profileid);
-        mDatabaseEventRef = mDatabase.getReference("events");
-        mDatabaseFollowRef = mDatabase.getReference("follow");
-        mUser = FirebaseAuth.getInstance().getCurrentUser();
-
-        Log.d("ProfileFragment","profileid sss: " + profileid);
-
-        //mProfile = view.findViewById(R.id.)
+        // Define UI reference
         mOptions = (ImageView) view.findViewById(R.id.options);
         mEvents = (TextView) view.findViewById(R.id.events);
         mFollowers = (TextView) view.findViewById(R.id.followers);
@@ -75,6 +64,13 @@ public class ProfileFragment extends Fragment {
         mBio = (TextView) view.findViewById(R.id.bio);
         mEmail = (TextView) view.findViewById(R.id.fullname);
         btnEditProfile = (Button) view.findViewById(R.id.btn_edit_profile);
+
+        // Define DB reference
+        mDatabase = FirebaseDatabase.getInstance();
+        mDatabaseUserRef = mDatabase.getReference("users").child(profileid);
+        mDatabaseEventRef = mDatabase.getReference("events");
+        mDatabaseFollowRef = mDatabase.getReference("follow");
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
 
         userInfo();
         getFollowers();

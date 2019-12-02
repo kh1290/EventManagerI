@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragments.SearchUserFragment">
+    tools:context=".Fragments.EventSharedListFragment">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/ubar"
+        android:id="@+id/sbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?android:attr/windowBackground">
@@ -26,7 +26,7 @@
                     android:id="@+id/uname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="USER LIST"
+                    android:text="Shared Events"
                     android:textSize="18sp"
                     android:maxLines="1"
                     android:textStyle="bold"
@@ -48,26 +48,31 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ubar">
+        android:layout_below="@+id/sbar">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerview_users"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerview_events"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </LinearLayout>
+
     <FrameLayout
         android:id="@+id/frameLayout"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-    </FrameLayout>
+        <com.miguelcatalan.materialsearchview.MaterialSearchView
+            android:id="@+id/searchView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </com.miguelcatalan.materialsearchview.MaterialSearchView>
 
+    </FrameLayout>
 </RelativeLayout>

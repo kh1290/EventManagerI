@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class EventListFragment extends Fragment {
+public class EventSharedListFragment extends Fragment {
     // UI reference
     private RecyclerView mRecyclerView;
     MaterialSearchView materialSearchView;
@@ -47,7 +47,6 @@ public class EventListFragment extends Fragment {
     private FirebaseDatabase mDatabase;
     private DatabaseReference mDatabaseRef;
     private DatabaseReference mDatabaseFollowRef;
-    private DatabaseReference mDatabaseFollowing;
     private FirebaseUser mUser;
 
 
@@ -60,8 +59,7 @@ public class EventListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_event_list, container, false);
-
+        View view = inflater.inflate(R.layout.fragment_event_shared_list, container, false);
 
         // Define UI reference
         materialSearchView = (MaterialSearchView) view.findViewById(R.id.searchView);
@@ -77,7 +75,7 @@ public class EventListFragment extends Fragment {
         uDisplayName = mUser.getDisplayName();
 
         // List events
-        loadMyEvent();
+        loadSharedEvent();
 
         return view;
     }
@@ -120,34 +118,6 @@ public class EventListFragment extends Fragment {
 
                     }
                 });
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    public void loadMyEvent() {
-        mDatabaseRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                events.clear();
-                List<String> keys = new ArrayList<>();
-
-                for(DataSnapshot keyNode : dataSnapshot.getChildren()){
-                    keys.add(keyNode.getKey());
-                    Event event = keyNode.getValue(Event.class);
-
-                    // Get value of userId to get my events
-                    userId = event.getUserId();
-
-                    if (currentUser.equals(userId)) {
-                        events.add(event);
-                        setUpRecyclerView();
-                    }
-                }
             }
 
             @Override

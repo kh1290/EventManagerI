@@ -137,6 +137,7 @@
                 android:layout_weight=".5"
                 android:text="Your rating" />
 
+
         </LinearLayout>
 
         <LinearLayout

@@ -7,6 +7,7 @@ import com.example.eventmanageri.Models.Event;
 import com.example.eventmanageri.Models.User;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,12 +29,12 @@ public class Database {
     private FirebaseStorage mStorage;
     private StorageReference mStoragePhotoRef;
     private StorageReference mStorageVideoRef;
+    private FirebaseUser mUser;
 
     // Events
     private List<Event> events = new ArrayList<>();
     private String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
-    private String userId, share;
-
+    private String userId, share, uDisplayName;
 
     public interface UserStatus {
         void UserIsInserted();
@@ -50,6 +51,8 @@ public class Database {
         mDatabase = FirebaseDatabase.getInstance();
         mDatabaseRef = mDatabase.getReference("events");
         mDatabaseUserRef = mDatabase.getReference("users");
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
+        uDisplayName = mUser.getDisplayName();
 
         mStorage = FirebaseStorage.getInstance();
         mStoragePhotoRef = mStorage.getReference("photo");
@@ -60,6 +63,7 @@ public class Database {
     public void addUser(User user, final UserStatus userStatus) {
         String key = currentUser;
 
+        user.setKey(currentUser);
         user.setRole("user");
         user.setBio("");
 
@@ -105,6 +109,7 @@ public class Database {
 
         event.setEventId(key);
         event.setUserId(currentUser);
+        event.setEmail(uDisplayName);
 
         mDatabaseRef.child(key).setValue(event).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override

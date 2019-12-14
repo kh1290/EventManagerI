@@ -54,7 +54,7 @@ public class EventViewActivity extends AppCompatActivity {
 
     // Data reference
     private String message, key, eventid, userid, title, date, memo, photo,
-            video, location, share, type, uId, uDisplayName;
+            video, location, share, type, uId, uDisplayName, email;
     List<Comment> listComment, listRate;
 
     // firebase reference
@@ -92,10 +92,11 @@ public class EventViewActivity extends AppCompatActivity {
 
 
         // <------------------------ Data ------------------------>
-        // Get data from EventListActivity
+        // Get data from fragments (EventListFragment, EventSharedListFragment)
         key = getIntent().getStringExtra("key");
         eventid = getIntent().getStringExtra("eventid");
         userid = getIntent().getStringExtra("userid");
+        email = getIntent().getStringExtra("email");
         title = getIntent().getStringExtra("title");
         date = getIntent().getStringExtra("date");
         memo = getIntent().getStringExtra("memo");
@@ -107,7 +108,7 @@ public class EventViewActivity extends AppCompatActivity {
 
         // Set data to display
         mTitle_viewTxt.setText(title);
-        mUser_viewTxt.setText(userid);
+        mUser_viewTxt.setText(email);
         mDate_viewTxt.setText(date);
         mMemo_viewTxt.setText(memo);
         mType_viewTxt.setText(type);
@@ -239,12 +240,13 @@ public class EventViewActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.update_event:
-                // Check if the user have the right permission
-                if (uDisplayName.equals(userid) || uDisplayName.equals("Admin")) {
+                // Check if the user has the right permission
+                if (uDisplayName.equals(email) || uDisplayName.equals("Admin")) {
                     // put data to EventModActivity
                     Intent intent = new Intent(EventViewActivity.this, EventModActivity.class);
                     intent.putExtra("key",eventid);
                     intent.putExtra("userid",userid);
+                    intent.putExtra("email",email);
                     intent.putExtra("title",mTitle_viewTxt.getText().toString());
                     intent.putExtra("type",mType_viewTxt.getText().toString());
                     intent.putExtra("date",mDate_viewTxt.getText().toString());

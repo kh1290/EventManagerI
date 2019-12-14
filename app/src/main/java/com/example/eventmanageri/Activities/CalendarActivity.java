@@ -16,7 +16,7 @@ public class CalendarActivity extends AppCompatActivity {
     private CalendarView mCalendarView;
 
     // Data reference
-    private String key, userid, title, date, type, memo, photo, video, location, share;
+    private String key, userid, email, title, date, type, memo, photo, video, location, share;
 
     // Activity reference
     public interface ActivityConstants {
@@ -35,6 +35,7 @@ public class CalendarActivity extends AppCompatActivity {
         // Get data from the calling activity
         key = getIntent().getStringExtra("key");
         userid = getIntent().getStringExtra("userid");
+        email = getIntent().getStringExtra("email");
         title = getIntent().getStringExtra("title");
         memo = getIntent().getStringExtra("memo");
         photo = getIntent().getStringExtra("photo");
@@ -73,6 +74,7 @@ public class CalendarActivity extends AppCompatActivity {
         intent.putExtra("date", date);
         intent.putExtra("key", key);
         intent.putExtra("userid", userid);
+        intent.putExtra("email", email);
         intent.putExtra("title", title);
         intent.putExtra("memo", memo);
         intent.putExtra("photo", photo);
@@ -89,6 +91,7 @@ public class CalendarActivity extends AppCompatActivity {
         intent.putExtra("date", date);
         intent.putExtra("key", key);
         intent.putExtra("userid", userid);
+        intent.putExtra("email", email);
         intent.putExtra("title", title);
         intent.putExtra("memo", memo);
         intent.putExtra("photo", photo);

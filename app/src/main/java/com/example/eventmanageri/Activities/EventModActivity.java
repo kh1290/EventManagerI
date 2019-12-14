@@ -40,7 +40,7 @@ public class EventModActivity extends AppCompatActivity {
     private Button mBtnDate, mBtnUpPhoto, mBtnUpdate, mBtnDelete, mBtnCancel;
 
     // Data reference
-    private String key, userid, title, date, memo, type, photo, photoUrl, video, location, share;
+    private String key, userid, email, title, date, memo, type, photo, photoUrl, video, location, share;
 
     // Photo reference
     private Uri mPhotoUri;
@@ -84,6 +84,7 @@ public class EventModActivity extends AppCompatActivity {
         // Get data from EventListActivity
         key = getIntent().getStringExtra("key");
         userid = getIntent().getStringExtra("userid");
+        email = getIntent().getStringExtra("email");
         title = getIntent().getStringExtra("title");
         date = getIntent().getStringExtra("date");
         memo = getIntent().getStringExtra("memo");
@@ -199,6 +200,7 @@ public class EventModActivity extends AppCompatActivity {
             Event event = new Event();
             event.setEventId(key);
             event.setUserId(userid);
+            event.setEmail(email);
             event.setTitle(mTitle_editTxt.getText().toString());
             event.setDate(mDate_viewTxt.getText().toString());
             event.setMemo(mMemo_editTxt.getText().toString());
@@ -249,6 +251,7 @@ public class EventModActivity extends AppCompatActivity {
                             Event event = new Event();
                             event.setEventId(key);
                             event.setUserId(userid);
+                            event.setEmail(email);
                             event.setTitle(mTitle_editTxt.getText().toString());
                             event.setDate(mDate_viewTxt.getText().toString());
                             event.setMemo(mMemo_editTxt.getText().toString());
@@ -300,6 +303,7 @@ public class EventModActivity extends AppCompatActivity {
         intent.putExtra("calling-activity",ActivityConstants.ACTIVITY_2);
         intent.putExtra("key",key);
         intent.putExtra("userid",userid);
+        intent.putExtra("email",email);
         intent.putExtra("title",mTitle_editTxt.getText().toString());
         intent.putExtra("memo",mMemo_editTxt.getText().toString());
         intent.putExtra("photo",photo);
@@ -322,9 +326,9 @@ public class EventModActivity extends AppCompatActivity {
         return index;
     }
 
-    // Go to EventListActivity
+    // Go to HomeEventActivity
     private void goToList() {
-        Intent goToList = new Intent(EventModActivity.this, EventListActivity.class);
+        Intent goToList = new Intent(getApplicationContext(), HomeEventActivity.class);
         startActivity(goToList);
     }
 }

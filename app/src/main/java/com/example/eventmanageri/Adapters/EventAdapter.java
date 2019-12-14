@@ -28,7 +28,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventItemVie
 
     class EventItemView extends RecyclerView.ViewHolder{
         private TextView mTitle, mType, mDate, mMemo, mPhoto, mVideo, mLocation, mShare;
-        private String key, mEventId, mUserId;
+        private String key, mEventId, mUserId, mEmail;
 
         public EventItemView(final ViewGroup parent) {
             super(LayoutInflater.from(parent.getContext()).inflate(R.layout.event_list_item, parent, false));
@@ -50,6 +50,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventItemVie
                     // intent.putExtra("key",key);
                     intent.putExtra("eventid",mEventId);
                     intent.putExtra("userid",mUserId);
+                    intent.putExtra("email",mEmail);
                     intent.putExtra("title",mTitle.getText().toString());
                     intent.putExtra("type",mType.getText().toString());
                     intent.putExtra("date",mDate.getText().toString());
@@ -67,6 +68,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventItemVie
         public void bind(Event event) { //, String key
             mEventId = event.getEventId();
             mUserId = event.getUserId();
+            mEmail = event.getEmail();
             mTitle.setText(event.getTitle());
             mType.setText(event.getType());
             mDate.setText(event.getDate());

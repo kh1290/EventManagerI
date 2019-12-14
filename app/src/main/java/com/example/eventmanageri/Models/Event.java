@@ -5,6 +5,7 @@ package com.example.eventmanageri.Models;
 public class Event {
     private String eventId;
     private String userId;
+    private String email;
     private String title;
     private String type;
     private String date;
@@ -18,9 +19,10 @@ public class Event {
     public Event() {
     }
 
-    public Event(String eventId, String userId, String title, String type, String date, String photoUrl, String memo, String photo, String video, String location, String share) {
+    public Event(String eventId, String userId, String email, String title, String type, String date, String photoUrl, String memo, String photo, String video, String location, String share) {
         this.eventId = eventId;
         this.userId = userId;
+        this.email = email;
         this.title = title;
         this.type = type;
         this.date = date;
@@ -46,6 +48,14 @@ public class Event {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getTitle() {

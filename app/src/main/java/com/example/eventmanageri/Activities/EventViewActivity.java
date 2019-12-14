@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventmanageri.Adapters.CommentAdapter;
 import com.example.eventmanageri.Models.Comment;
+import com.example.eventmanageri.Models.Rating;
 import com.example.eventmanageri.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -54,7 +55,7 @@ public class EventViewActivity extends AppCompatActivity {
     // Data reference
     private String message, key, eventid, userid, title, date, memo, photo,
             video, location, share, type, uId, uDisplayName;
-    List<Comment> listComment;
+    List<Comment> listComment, listRate;
 
     // firebase reference
     private FirebaseDatabase mDatabase;
@@ -124,11 +125,26 @@ public class EventViewActivity extends AppCompatActivity {
         mBtnRate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mBtnRate.setVisibility(View.INVISIBLE);
+                    mBtnRate.setVisibility(View.VISIBLE);
                     DatabaseReference ratingRef = mDatabase.getReference("rate").child(eventid).push();
                     String rating_content = String.valueOf(ratingRatingBar.getRating());
                     String uid = mUser.getUid();
                     String uname = mUser.getDisplayName();
+
+                    Rating rating = new Rating(rating_content, uid, uname);
+                    ratingRef.setValue(rating).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(EventViewActivity.this,"Rating added",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(EventViewActivity.this,"Unsuccessful",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
 
                     Log.d ("EventViewActivity", "rating bar value ssss : " + uid);
                     Log.d ("EventViewActivity", "rating bar value ssss : " + uname);
@@ -138,19 +154,8 @@ public class EventViewActivity extends AppCompatActivity {
                     String test = String.valueOf(ratingRatingBar.getRating());
                     Log.d ("EventViewActivity", "rating bar value ssss : " + test);
 
-                    /*
-                    mBtnRate.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            ratingDisplayTextView.setText("Your rating is:"+ratingRatingBar.getRating());
-
-                        }
-                    });
-
-                     */
                 }
         });
-
 
 
         // "Comment" Button : Put new comment
@@ -185,6 +190,7 @@ public class EventViewActivity extends AppCompatActivity {
     }
 
     // <------------------------ Function ------------------------>
+
     private void iniRvComment() {
         RvComment.setLayoutManager(new LinearLayoutManager(this));
 
@@ -210,11 +216,15 @@ public class EventViewActivity extends AppCompatActivity {
         });
     }
 
+
+    // <------------------------ Function ------------------------>
+
     private String timestampToString(long time) {
         Calendar calendar = Calendar.getInstance(Locale.ENGLISH);
         calendar.setTimeInMillis(time);
         String commentDate = DateFormat.getDateInstance().toString();
         return commentDate;
+
     }
 
     // <------------------------ Menu ------------------------>

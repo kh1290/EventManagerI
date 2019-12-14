@@ -106,7 +106,7 @@ public class EventListActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mEventAdapter);
     }
-
+/*
 
     // <------------------------ Menu ------------------------>
     // Menu: "Search", "New Event"
@@ -148,6 +148,8 @@ public class EventListActivity extends AppCompatActivity {
     }
 
 
+
+ */
     // <----------------------- Search ----------------------->
     // Search events
     private List<Event> filter(List<Event> pl, String query) {

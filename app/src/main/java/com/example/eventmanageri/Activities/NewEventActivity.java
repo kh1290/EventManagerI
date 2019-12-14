@@ -312,8 +312,9 @@
         }
 
         // Go to EventListActivity
-        private void goToList() {
-        Intent goToList = new Intent(NewEventActivity.this, EventListActivity.class);
+    private void goToList() {
+        Intent goToList = new Intent(getApplicationContext(), HomeEventActivity.class);
+       
         startActivity(goToList);
         }
         }

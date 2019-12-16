@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.eventmanageri.Adapters.CommentAdapter;
 import com.example.eventmanageri.Models.Comment;
 import com.example.eventmanageri.Models.Rating;
+import com.example.eventmanageri.Models.User;
 import com.example.eventmanageri.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -54,12 +55,13 @@ public class EventViewActivity extends AppCompatActivity {
 
     // Data reference
     private String message, key, eventid, userid, title, date, memo, photo,
-            video, location, share, type, uId, uDisplayName, email;
+            video, location, share, type, uId, uDisplayName, email, role;
     List<Comment> listComment, listRate;
 
     // firebase reference
-    private FirebaseDatabase mDatabase;
     private FirebaseUser mUser;
+    private FirebaseDatabase mDatabase;
+    private DatabaseReference mDatabaseUserRef;
 
 
     @Override
@@ -85,10 +87,11 @@ public class EventViewActivity extends AppCompatActivity {
         final TextView ratingDisplayTextView = (TextView) findViewById(R.id.textViewRate);
 
         // Define firebase reference
-        mDatabase = FirebaseDatabase.getInstance();
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         uId = mUser.getUid();
+        mDatabase = FirebaseDatabase.getInstance();
         uDisplayName = mUser.getDisplayName();
+        mDatabaseUserRef = mDatabase.getReference("users").child(uId);
 
 
         // <------------------------ Data ------------------------>
@@ -240,26 +243,40 @@ public class EventViewActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.update_event:
-                // Check if the user has the right permission
-                if (uId.equals(userid) || uDisplayName.equals("Admin")) {
-                    // put data to EventModActivity
-                    Intent intent = new Intent(EventViewActivity.this, EventModActivity.class);
-                    intent.putExtra("key",eventid);
-                    intent.putExtra("userid",userid);
-                    intent.putExtra("email",email);
-                    intent.putExtra("title",mTitle_viewTxt.getText().toString());
-                    intent.putExtra("type",mType_viewTxt.getText().toString());
-                    intent.putExtra("date",mDate_viewTxt.getText().toString());
-                    intent.putExtra("memo",mMemo_viewTxt.getText().toString());
-                    intent.putExtra("photo",photo);
-                    intent.putExtra("video",mVideo_viewTxt.getText().toString());
-                    intent.putExtra("location",mLocation_viewTxt.getText().toString());
-                    intent.putExtra("share",share);
-                    startActivity(intent);
 
-                } else {
-                    Toast.makeText(EventViewActivity.this,"You do not have permission",Toast.LENGTH_SHORT).show();
-                }
+                mDatabaseUserRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        User user = dataSnapshot.getValue(User.class);
+                        role = user.getRole();
+
+                        // Check if the user has the right permission
+                        if (uId.equals(userid) || role.equals("manager")) {
+                            // put data to EventModActivity
+                            Intent intent = new Intent(EventViewActivity.this, EventModActivity.class);
+                            intent.putExtra("key",eventid);
+                            intent.putExtra("userid",userid);
+                            intent.putExtra("email",email);
+                            intent.putExtra("title",mTitle_viewTxt.getText().toString());
+                            intent.putExtra("type",mType_viewTxt.getText().toString());
+                            intent.putExtra("date",mDate_viewTxt.getText().toString());
+                            intent.putExtra("memo",mMemo_viewTxt.getText().toString());
+                            intent.putExtra("photo",photo);
+                            intent.putExtra("video",mVideo_viewTxt.getText().toString());
+                            intent.putExtra("location",mLocation_viewTxt.getText().toString());
+                            intent.putExtra("share",share);
+                            startActivity(intent);
+
+                        } else {
+                            Toast.makeText(EventViewActivity.this,"You do not have permission",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
                 return true;
         }
         return super.onOptionsItemSelected(item);

@@ -68,7 +68,7 @@ public class SearchUserFragment extends Fragment {
         uDisplayName = mUser.getDisplayName();
 
         // Define UserAdapter reference
-        mUserAdapter = new UserAdapter(users, getContext());
+        mUserAdapter = new UserAdapter(users, getContext(),true);
         mRecyclerView.setAdapter(mUserAdapter);
 
         // List users

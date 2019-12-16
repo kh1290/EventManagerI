@@ -23,6 +23,8 @@ import com.example.eventmanageri.R;
 import java.util.List;
 import com.example.eventmanageri.Activities.CalendarActivity.ActivityConstants;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -40,7 +42,7 @@ public class EventModActivity extends AppCompatActivity {
     private Button mBtnDate, mBtnUpPhoto, mBtnUpdate, mBtnDelete, mBtnCancel;
 
     // Data reference
-    private String key, userid, email, title, date, memo, type, photo, photoUrl, video, location, share;
+    private String key, userid, email, title, date, memo, type, photo, photoUrl, video, location, share, uDisplayName;
 
     // Photo reference
     private Uri mPhotoUri;
@@ -51,6 +53,7 @@ public class EventModActivity extends AppCompatActivity {
     private DatabaseReference mDatabaseRef;
     private FirebaseStorage mStorage;
     private StorageReference mStorageRef;
+    private FirebaseUser mUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +81,8 @@ public class EventModActivity extends AppCompatActivity {
         mDatabaseRef = mDatabase.getReference("events");
         mStorage = FirebaseStorage.getInstance();
         mStorageRef = mStorage.getReference("photo");
-
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
+        uDisplayName = mUser.getDisplayName();
 
         // <------------------------ Data ------------------------>
         // Get data from EventListActivity
@@ -200,7 +204,7 @@ public class EventModActivity extends AppCompatActivity {
             Event event = new Event();
             event.setEventId(key);
             event.setUserId(userid);
-            event.setEmail(email);
+            event.setEmail(uDisplayName);
             event.setTitle(mTitle_editTxt.getText().toString());
             event.setDate(mDate_viewTxt.getText().toString());
             event.setMemo(mMemo_editTxt.getText().toString());
@@ -251,7 +255,7 @@ public class EventModActivity extends AppCompatActivity {
                             Event event = new Event();
                             event.setEventId(key);
                             event.setUserId(userid);
-                            event.setEmail(email);
+                            event.setEmail(uDisplayName);
                             event.setTitle(mTitle_editTxt.getText().toString());
                             event.setDate(mDate_viewTxt.getText().toString());
                             event.setMemo(mMemo_editTxt.getText().toString());
@@ -303,7 +307,7 @@ public class EventModActivity extends AppCompatActivity {
         intent.putExtra("calling-activity",ActivityConstants.ACTIVITY_2);
         intent.putExtra("key",key);
         intent.putExtra("userid",userid);
-        intent.putExtra("email",email);
+        intent.putExtra("email",uDisplayName);
         intent.putExtra("title",mTitle_editTxt.getText().toString());
         intent.putExtra("memo",mMemo_editTxt.getText().toString());
         intent.putExtra("photo",photo);

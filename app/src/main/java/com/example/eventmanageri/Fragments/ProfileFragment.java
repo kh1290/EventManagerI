@@ -1,23 +1,22 @@
 package com.example.eventmanageri.Fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.example.eventmanageri.Activities.FollowerActivity;
+import com.example.eventmanageri.Activities.ProfileEditActivity;
 import com.example.eventmanageri.Models.Event;
 import com.example.eventmanageri.Models.User;
 import com.example.eventmanageri.R;
@@ -29,16 +28,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.List;
-
 
 public class ProfileFragment extends Fragment {
-
     // UI reference
     ImageView mOptions;
     TextView mEvents, mFollowers, mFollowing, mUname, mBio, mEmail;
     Button btnEditProfile;
-    String profileid;
+    String profileid, uDisplayName, uname;
 
     // DB reference
     private FirebaseDatabase mDatabase;
@@ -46,7 +42,6 @@ public class ProfileFragment extends Fragment {
     private DatabaseReference mDatabaseFollowRef;
     private DatabaseReference mDatabaseEventRef;
     private FirebaseUser mUser;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -71,44 +66,85 @@ public class ProfileFragment extends Fragment {
         mDatabaseEventRef = mDatabase.getReference("events");
         mDatabaseFollowRef = mDatabase.getReference("follow");
         mUser = FirebaseAuth.getInstance().getCurrentUser();
+        uDisplayName = mUser.getDisplayName();
+
 
         userInfo();
         getFollowers();
         getNrEvents();
 
+        // <------------------------ Button ------------------------>
+        // Button "text" depending on user
         if (profileid.equals(mUser.getUid())) {
-            btnEditProfile.setText("Edit Profile");
+            // Compare current user's uid with selected user's uid
+            if ("Admin".equals(mUser.getDisplayName())) {
+                // If the user is Administrator, button says "ADMINISTRATOR"
+                btnEditProfile.setText("ADMINISTRATOR");
+            } else {
+                // If the user selects his own profile, button says "Edit Profile"
+                btnEditProfile.setText("Edit Profile");
+            }
         } else {
+            // If the user selects other user's profile, check follow/following
             checkFollow();
-
         }
 
-        // Button
+        // Button "function" depending on user
         btnEditProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Get the text on button
                 String btn = btnEditProfile.getText().toString();
 
                 if (btn.equals("Edit Profile")) {
-
+                    // Go to ProfileEditActivity
+                    startActivity(new Intent(getContext(), ProfileEditActivity.class));
                 } else if (btn.equals("follow")) {
+                    // Add follow info into firebase
                     mDatabaseFollowRef.child(mUser.getUid())
                             .child("following").child(profileid).setValue(true);
                     mDatabaseFollowRef.child(profileid)
                             .child("followers").child(mUser.getUid()).setValue(true);
-
                 } else if (btn.equals("following")) {
+                    // Delete following info from firebase
                     mDatabaseFollowRef.child(mUser.getUid())
                             .child("following").child(profileid).removeValue();
                     mDatabaseFollowRef.child(profileid)
                             .child("followers").child(mUser.getUid()).removeValue();
+                } else if (btn.equals("ADMINISTRATOR")) {
+                    // Do nothing
                 }
+            }
+        });
+
+        // When the user clicks "followers"
+        mFollowers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), FollowerActivity.class);
+                intent.putExtra("id", profileid);
+                intent.putExtra("title", "followers");
+                intent.putExtra("uname", uname);
+                startActivity(intent);
+            }
+        });
+
+        // When the user clicks "following"
+        mFollowing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), FollowerActivity.class);
+                intent.putExtra("id", profileid);
+                intent.putExtra("title", "following");
+                intent.putExtra("uname", uname);
+                startActivity(intent);
             }
         });
 
         return view;
     }
 
+    // <------------------------ Function ------------------------>
     // Get user profile
     private void userInfo() {
         mDatabaseUserRef.addValueEventListener(new ValueEventListener() {
@@ -119,15 +155,14 @@ public class ProfileFragment extends Fragment {
                 }
 
                 User user = dataSnapshot.getValue(User.class);
-
                 mUname.setText(user.getUname());
                 mEmail.setText(user.getEmail());
                 mBio.setText(user.getBio());
+                uname = user.getUname();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
 
             }
         });

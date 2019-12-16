@@ -102,6 +102,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserItemView> 
             @Override
             public void onClick(View v) {
                 if (isFragment) {
+                    // If it is called from ProfileFragment
+                    // Show user's profile
                     SharedPreferences.Editor editor = mContext.getSharedPreferences("PREFS",
                             Context.MODE_PRIVATE).edit();
                     editor.putString("profileid", user.getKey());
@@ -110,9 +112,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserItemView> 
                     ((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction()
                             .replace(R.id.frameLayout, new ProfileFragment()).commit();
                 } else {
-                    Intent intent = new Intent(mContext, HomeEventActivity.class);
-                    intent.putExtra("publisherid", user.getKey());
-                    mContext.startActivity(intent);
+                    // if it is called from FollowerActivity
+                    // Do nothing
                 }
             }
         });

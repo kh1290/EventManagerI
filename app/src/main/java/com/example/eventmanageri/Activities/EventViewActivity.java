@@ -241,7 +241,7 @@ public class EventViewActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.update_event:
                 // Check if the user has the right permission
-                if (uDisplayName.equals(email) || uDisplayName.equals("Admin")) {
+                if (uId.equals(userid) || uDisplayName.equals("Admin")) {
                     // put data to EventModActivity
                     Intent intent = new Intent(EventViewActivity.this, EventModActivity.class);
                     intent.putExtra("key",eventid);

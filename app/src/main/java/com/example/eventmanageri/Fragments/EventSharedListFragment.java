@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import com.example.eventmanageri.Adapters.EventAdapter;
 import com.example.eventmanageri.Models.Event;
@@ -35,6 +36,7 @@ public class EventSharedListFragment extends Fragment {
     // UI reference
     private RecyclerView mRecyclerView;
     MaterialSearchView materialSearchView;
+    EditText mSearch;
 
     // Data reference
     private String userId, share, following, currentUser, uDisplayName;
@@ -77,6 +79,7 @@ public class EventSharedListFragment extends Fragment {
         // List events
         loadSharedEvent();
 
+//        mSearch.setFilter
         return view;
     }
 

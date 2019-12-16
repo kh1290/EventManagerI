@@ -29,9 +29,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 
 public class HomeBarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    Fragment mFragment = null;
-    private static final int PReqCode = 2 ;
-    private static final int REQUESCODE = 2 ;
     FirebaseUser mUser;
 
     private AppBarConfiguration mAppBarConfiguration;
@@ -95,16 +92,15 @@ public class HomeBarActivity extends AppCompatActivity
         int id = menuItem.getItemId();
 
         switch (menuItem.getItemId()) {
+            // "activity_home_bar_drawer.xml"
             case R.id.nav_home:
                 getSupportActionBar().setTitle("Home");
                 Intent GoToEventList = new Intent(getApplicationContext(), HomeEventActivity.class);
                 startActivity(GoToEventList);
                 break;
-            case R.id.nav_myprofile:
-                SharedPreferences.Editor editor = getSharedPreferences("PREFS",MODE_PRIVATE).edit();
-                editor.putString("profileid", mUser.getUid());
-                editor.apply();
-                mFragment = new ProfileFragment();
+            case R.id.nav_new:
+                Intent GoToNew = new Intent(getApplicationContext(),NewEventActivity.class);
+                startActivity(GoToNew);
                 break;
             case R.id.nav_signout:
                 FirebaseAuth.getInstance().signOut();

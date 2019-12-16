@@ -6,15 +6,19 @@
     <item android:title="EventManagerI">
         <menu>
             <item
-                android:id="@+id/nav_myprofile"
-                android:icon="@drawable/ic_heart"
-                android:title="Help" />
-
-            <item
                 android:id="@+id/nav_home"
                 android:icon="@drawable/ic_options"
                 android:title="Event List" />
 
+            <item
+                android:id="@+id/nav_new"
+                android:icon="@drawable/ic_addcir"
+                android:title="New Event" />
+        </menu>
+    </item>
+
+    <item android:title="See you soon~!">
+        <menu>
             <item
                 android:id="@+id/nav_signout"
                 android:icon="@drawable/ic_exit_to_app_black_24dp"

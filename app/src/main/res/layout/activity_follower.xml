@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragments.EventListFragment">
+    tools:context=".Activities.FollowerActivity">
+
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/mbar"
+        android:id="@+id/bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?android:attr/windowBackground">
@@ -22,41 +23,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <FrameLayout
-                    android:id="@+id/frameLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <com.miguelcatalan.materialsearchview.MaterialSearchView
-                        android:id="@+id/searchView"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="100dp"
-                        android:layout_marginRight="40dp">
-                    </com.miguelcatalan.materialsearchview.MaterialSearchView>
-                </FrameLayout>
-
                 <TextView
                     android:id="@+id/uname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
-                    android:text="MY EVENTS"
                     android:textSize="18sp"
                     android:maxLines="1"
                     android:textStyle="bold"
-                    android:textColor="#000000"/>
+                    android:textColor="#FF5722"/>
 
                 <ImageView
                     android:id="@+id/options"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
                     app:srcCompat="@drawable/ic_star"
                     android:layout_marginEnd="10dp"
                     android:layout_marginRight="10dp"
@@ -66,19 +45,20 @@
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
-
-    <LinearLayout
+    <ScrollView
+        android:layout_below="@+id/bar"
+        android:layout_marginTop="?attr/actionBarSize"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/mbar">
+        android:layout_height="wrap_content">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerview_events"
+            android:id="@+id/follower_recyclerview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </LinearLayout>
-</RelativeLayout>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="?attr/actionBarSize"
+            android:layout_below="@+id/bar"
+            tools:ignore="MissingConstraints" />
+    </ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

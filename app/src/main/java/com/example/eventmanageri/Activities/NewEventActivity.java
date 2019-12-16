@@ -314,3 +314,4 @@ public class NewEventActivity extends AppCompatActivity {
                 startActivity(goToList);
         }
 }
+

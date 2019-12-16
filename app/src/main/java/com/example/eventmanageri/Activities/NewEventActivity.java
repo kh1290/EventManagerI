@@ -107,7 +107,9 @@ public class NewEventActivity extends AppCompatActivity {
                 mLocation_editTxt.setText(location);
                 mType_sp.setSelection(getIndex_SpinnerItem(mType_sp, type));
                 mShare_sp.setSelection(getIndex_SpinnerItem(mShare_sp, share));
-
+                if (photo != null) {
+                        mPhoto_imgView.setImageURI(Uri.parse(photo));
+                }
 
                 // <------------------------ Button ------------------------>
                 // "CHOOSE DATE" Button : Choose the date
@@ -288,7 +290,7 @@ public class NewEventActivity extends AppCompatActivity {
                 intent.putExtra("calling-activity",ActivityConstants.ACTIVITY_1);
                 intent.putExtra("title",mTitle_editTxt.getText().toString());
                 intent.putExtra("memo",mMemo_editTxt.getText().toString());
-                intent.putExtra("photo",photo);
+                intent.putExtra("photo",mPhotoUri.toString());
                 intent.putExtra("video",mVideo_editTxt.getText().toString());
                 intent.putExtra("location",mLocation_editTxt.getText().toString());
                 intent.putExtra("type",mType_sp.getSelectedItem().toString());

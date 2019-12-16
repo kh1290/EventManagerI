@@ -61,7 +61,7 @@ public class FollowerActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         idList = new ArrayList<>();
         userList = new ArrayList<>();
-        mUserAdapter = new UserAdapter(userList, this,true);
+        mUserAdapter = new UserAdapter(userList, this,false);
         mRecyclerView.setAdapter(mUserAdapter);
 
         mUname.setText(uname);

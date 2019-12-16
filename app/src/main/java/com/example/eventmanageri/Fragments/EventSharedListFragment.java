@@ -18,6 +18,7 @@ import android.widget.EditText;
 
 import com.example.eventmanageri.Adapters.EventAdapter;
 import com.example.eventmanageri.Models.Event;
+import com.example.eventmanageri.Models.User;
 import com.example.eventmanageri.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -39,7 +40,7 @@ public class EventSharedListFragment extends Fragment {
     EditText mSearch;
 
     // Data reference
-    private String userId, share, following, currentUser, uDisplayName;
+    private String userId, share, following, currentUser, uDisplayName, role;
     private List<Event> events = new ArrayList<>();
 
     // Adapter reference
@@ -50,6 +51,7 @@ public class EventSharedListFragment extends Fragment {
     private DatabaseReference mDatabaseRef;
     private DatabaseReference mDatabaseFollowRef;
     private FirebaseUser mUser;
+    private DatabaseReference mDatabaseUserRef;
 
 
     @Override
@@ -75,17 +77,65 @@ public class EventSharedListFragment extends Fragment {
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         currentUser = mUser.getUid();
         uDisplayName = mUser.getDisplayName();
+        mDatabaseUserRef = mDatabase.getReference("users").child(currentUser);
 
-        // List events
-        loadSharedEvent();
 
-//        mSearch.setFilter
+        mDatabaseUserRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                role = user.getRole();
+
+                // Check if the user has the right permission
+                if (role.equals("manager")) {
+                    // Administrator can load all events
+                    loadAllEvent();
+                } else {
+                    // Users can list shared events of following users
+                    loadSharedEvent();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         return view;
     }
 
 
     // <------------------------ List ------------------------>
     // List events
+    public void loadAllEvent() {
+        mDatabaseRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                events.clear();
+                List<String> keys = new ArrayList<>();
+
+                for(DataSnapshot keyNode : dataSnapshot.getChildren()){
+                    keys.add(keyNode.getKey());
+                    Event event = keyNode.getValue(Event.class);
+
+                    // Get value of userId to get my events
+                    userId = event.getUserId();
+
+                    if (currentUser.equals(userId) == false) {
+                        events.add(event);
+                        setUpRecyclerView();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     public void loadSharedEvent() {
         DatabaseReference reference = mDatabaseFollowRef.child(currentUser).child("following");
         reference.addValueEventListener(new ValueEventListener() {

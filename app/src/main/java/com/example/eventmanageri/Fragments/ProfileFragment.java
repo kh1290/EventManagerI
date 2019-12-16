@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.eventmanageri.Activities.FollowerActivity;
+import com.example.eventmanageri.Activities.HomeEventActivity;
 import com.example.eventmanageri.Activities.ProfileEditActivity;
 import com.example.eventmanageri.Models.Event;
 import com.example.eventmanageri.Models.User;
@@ -76,14 +77,8 @@ public class ProfileFragment extends Fragment {
         // <------------------------ Button ------------------------>
         // Button "text" depending on user
         if (profileid.equals(mUser.getUid())) {
-            // Compare current user's uid with selected user's uid
-            if ("Admin".equals(mUser.getDisplayName())) {
-                // If the user is Administrator, button says "ADMINISTRATOR"
-                btnEditProfile.setText("ADMINISTRATOR");
-            } else {
-                // If the user selects his own profile, button says "Edit Profile"
-                btnEditProfile.setText("Edit Profile");
-            }
+            // If the user selects his own profile, button says "Edit Profile"
+            btnEditProfile.setText("Edit Profile");
         } else {
             // If the user selects other user's profile, check follow/following
             checkFollow();
@@ -111,8 +106,19 @@ public class ProfileFragment extends Fragment {
                             .child("following").child(profileid).removeValue();
                     mDatabaseFollowRef.child(profileid)
                             .child("followers").child(mUser.getUid()).removeValue();
-                } else if (btn.equals("ADMINISTRATOR")) {
-                    // Do nothing
+                }
+            }
+        });
+
+        // When the user clicks "followers"
+        mEvents.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (profileid.equals(mUser.getUid())) {
+                    // Compare current user's uid with selected user's uid
+                    // Go to "MY EVENTS"
+                    Intent intent = new Intent(getContext(), HomeEventActivity.class);
+                    startActivity(intent);
                 }
             }
         });

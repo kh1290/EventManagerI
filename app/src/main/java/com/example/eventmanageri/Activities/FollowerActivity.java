@@ -26,7 +26,7 @@ public class FollowerActivity extends AppCompatActivity {
     String id, title, uname;
     TextView mUname;
     RecyclerView mRecyclerView;
-    UserAdapter userAdapter;
+    UserAdapter mUserAdapter;
     List<String> idList;
     List<User> userList;
 
@@ -61,8 +61,8 @@ public class FollowerActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         idList = new ArrayList<>();
         userList = new ArrayList<>();
-        userAdapter = new UserAdapter(userList, this);
-        mRecyclerView.setAdapter(userAdapter);
+        mUserAdapter = new UserAdapter(userList, this,true);
+        mRecyclerView.setAdapter(mUserAdapter);
 
         mUname.setText(uname);
 
@@ -131,7 +131,7 @@ public class FollowerActivity extends AppCompatActivity {
                         }
                     }
                 }
-                userAdapter.notifyDataSetChanged();
+                mUserAdapter.notifyDataSetChanged();
             }
 
             @Override

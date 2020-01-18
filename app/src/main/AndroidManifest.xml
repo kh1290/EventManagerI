@@ -39,6 +39,8 @@
         <activity android:name=".Activities.EventModActivity" />
         <activity android:name=".Activities.EventViewActivity" />
         <activity android:name=".Activities.NewEventActivity" />
+        <activity android:name=".Activities.LocationActivity" />
+        <activity android:name=".Activities.VideoActivity" />
         <activity android:name=".Activities.CalendarActivity" />
         <activity android:name=".Activities.MainActivity">
             <intent-filter>

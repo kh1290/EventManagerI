@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
@@ -29,7 +30,10 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+
+
 import java.util.List;
+
 
 
 public class NewEventActivity extends AppCompatActivity {
@@ -41,7 +45,7 @@ public class NewEventActivity extends AppCompatActivity {
         private VideoView mVideo_videoView;
         private MediaController mediaC;
         private Spinner mType_sp, mShare_sp;
-        private Button mBtnDate, mBtnUpPhoto, mBtnUpVideo, mBtnAdd, mBtnCancel;
+        private Button mBtnDate, mBtnUpPhoto, mBtnUpVideo, mBtnAdd, mBtnCancel, mbtnUpLocation;
 
         // Data reference
         private String title, date, type, memo, photo, photoUrl, video, location, share;
@@ -55,6 +59,9 @@ public class NewEventActivity extends AppCompatActivity {
         private DatabaseReference mDatabaseRef;
         private FirebaseStorage mStorage;
         private StorageReference mStoragePhotoRef, mStorageVideoRef;
+
+        private boolean isEditing = false;
+        private Event eventEditing;
 
 
         @Override
@@ -78,6 +85,7 @@ public class NewEventActivity extends AppCompatActivity {
                 mBtnAdd = (Button) findViewById(R.id.btnAdd);
                 mBtnCancel = (Button) findViewById(R.id.btnCancel);
                 mediaC = new MediaController(this);
+                mbtnUpLocation = (Button) findViewById(R.id.btnUpLocation);
 
                 // Define firebase reference
                 mDatabase = FirebaseDatabase.getInstance();
@@ -88,6 +96,7 @@ public class NewEventActivity extends AppCompatActivity {
 
 
                 // <------------------------ Data ------------------------>
+
                 // Get data from CalendarActivity
                 Intent intent = getIntent();
                 date = intent.getStringExtra("date");
@@ -128,6 +137,22 @@ public class NewEventActivity extends AppCompatActivity {
                         }
                 });
 
+                // "PHOTO" Button : Choose photo to upload
+                mBtnUpVideo.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                                chooseVideo();
+                        }
+                });
+
+                // "Location" Button : Choose location to upload
+                mbtnUpLocation.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                                chooseLocation();
+                        }
+                });
+
                 // "CANCEL" Button : Back to the event lists
                 mBtnCancel.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -145,23 +170,20 @@ public class NewEventActivity extends AppCompatActivity {
                         }
                 });
         }
+        // <------------------------ Function ------------------------>
 
         //Video
 
-        public void playVideo(View v) {
-//            String path = "android.resource://com.example.eventmanageri.Activities/"+R.raw.cloud;
-                String path = "android.resource://" + getPackageName() +"/" + R.raw.cloud;
+        /*public void playVideo(View v) {
+                String path = "android.resource://" + getPackageName() + "/" + R.raw.cloud;
                 Uri u = Uri.parse(path);
 
                 mVideo_videoView.setVideoURI(u);
                 mVideo_videoView.setMediaController(mediaC);
                 mediaC.setAnchorView(mVideo_videoView);
                 mVideo_videoView.start();
-                Log.d("NewEventActivity", "111111: "+mVideo_videoView);
-        }
-
-
-        // <------------------------ Function ------------------------>
+                Log.d("NewEventActivity", "111111: " + mVideo_videoView);
+        }*/
 
         // Choose photo
         private void choosePhoto() {
@@ -183,7 +205,6 @@ public class NewEventActivity extends AppCompatActivity {
 
                 }
         }
-
 
         // Create new event
         private void newEvent() {
@@ -290,9 +311,37 @@ public class NewEventActivity extends AppCompatActivity {
                 intent.putExtra("calling-activity",ActivityConstants.ACTIVITY_1);
                 intent.putExtra("title",mTitle_editTxt.getText().toString());
                 intent.putExtra("memo",mMemo_editTxt.getText().toString());
-                intent.putExtra("photo",mPhotoUri.toString());
+                //intent.putExtra("photo",mPhotoUri.toString());
                 intent.putExtra("video",mVideo_editTxt.getText().toString());
                 intent.putExtra("location",mLocation_editTxt.getText().toString());
+                intent.putExtra("type",mType_sp.getSelectedItem().toString());
+                intent.putExtra("share",mShare_sp.getSelectedItem().toString());
+                startActivityForResult(intent,1001);
+        }
+        // Choose Video
+        private void chooseVideo() {
+                // Put data to Video Activity
+                Intent intent = new Intent(NewEventActivity.this, VideoActivity.class);
+                intent.putExtra("calling-activity",ActivityConstants.ACTIVITY_1);
+                intent.putExtra("title",mTitle_editTxt.getText().toString());
+                intent.putExtra("memo",mMemo_editTxt.getText().toString());
+                //intent.putExtra("photo",mPhotoUri.toString());
+                intent.putExtra("location",mLocation_editTxt.getText().toString());
+                intent.putExtra("date",mDate_viewTxt.getText().toString());
+                intent.putExtra("type",mType_sp.getSelectedItem().toString());
+                intent.putExtra("share",mShare_sp.getSelectedItem().toString());
+                startActivityForResult(intent,1001);
+        }
+        // Choose Location
+        private void chooseLocation() {
+                // Put data to Location Activity
+                Intent intent = new Intent(NewEventActivity.this, LocationActivity.class);
+                intent.putExtra("calling-activity",ActivityConstants.ACTIVITY_1);
+                intent.putExtra("title",mTitle_editTxt.getText().toString());
+                intent.putExtra("memo",mMemo_editTxt.getText().toString());
+                //intent.putExtra("photo",mPhotoUri.toString());
+                intent.putExtra("video",mVideo_editTxt.getText().toString());
+                intent.putExtra("date",mDate_viewTxt.getText().toString());
                 intent.putExtra("type",mType_sp.getSelectedItem().toString());
                 intent.putExtra("share",mShare_sp.getSelectedItem().toString());
                 startActivityForResult(intent,1001);

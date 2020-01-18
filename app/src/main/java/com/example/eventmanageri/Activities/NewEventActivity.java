@@ -37,7 +37,6 @@ import java.util.List;
 
 
 public class NewEventActivity extends AppCompatActivity {
-
         // UI reference
         private EditText mTitle_editTxt, mMemo_editTxt, mVideo_editTxt, mLocation_editTxt;
         private TextView mDate_viewTxt;
@@ -48,20 +47,18 @@ public class NewEventActivity extends AppCompatActivity {
         private Button mBtnDate, mBtnUpPhoto, mBtnUpVideo, mBtnAdd, mBtnCancel, mbtnUpLocation;
 
         // Data reference
-        private String title, date, type, memo, photo, photoUrl, video, location, share;
+        private String title, date, type, memo, photo, photoUrl, video, videoUrl, location, share;
 
         // Photo reference
-        private Uri mPhotoUri;
+        private Uri mPhotoUri, mVideoUri;
         private static final int PICK_Photo_Request = 1;
+        private static final int PICK_VIDEO_REQUEST = 2;
 
         // firebase reference
         private FirebaseDatabase mDatabase;
         private DatabaseReference mDatabaseRef;
         private FirebaseStorage mStorage;
         private StorageReference mStoragePhotoRef, mStorageVideoRef;
-
-        private boolean isEditing = false;
-        private Event eventEditing;
 
 
         @Override
@@ -120,6 +117,10 @@ public class NewEventActivity extends AppCompatActivity {
                         mPhoto_imgView.setImageURI(Uri.parse(photo));
                 }
 
+                mVideo_videoView.setMediaController(mediaC);
+                mediaC.setAnchorView(mVideo_videoView);
+                mVideo_videoView.start();
+
                 // <------------------------ Button ------------------------>
                 // "CHOOSE DATE" Button : Choose the date
                 mBtnDate.setOnClickListener(new View.OnClickListener() {
@@ -137,7 +138,7 @@ public class NewEventActivity extends AppCompatActivity {
                         }
                 });
 
-                // "PHOTO" Button : Choose photo to upload
+                // "VIDEO" Button : Choose video to upload
                 mBtnUpVideo.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -197,26 +198,33 @@ public class NewEventActivity extends AppCompatActivity {
         protected void onActivityResult(int requestCode, int resultCode, Intent data) {
                 super.onActivityResult(requestCode, resultCode, data);
 
-                if (requestCode == PICK_Photo_Request && resultCode == RESULT_OK) {
-                        // The user has picked a photo successfully
-                        // Save its reference to a Uri variable
-                        mPhotoUri = data.getData();
-                        mPhoto_imgView.setImageURI(mPhotoUri);
-
+                switch (requestCode) {
+                        case PICK_Photo_Request:
+                                if (requestCode == PICK_Photo_Request && resultCode == RESULT_OK) {
+                                        // The user has picked a photo successfully
+                                        // Save its reference to a Uri variable
+                                        mPhotoUri = data.getData();
+                                        mPhoto_imgView.setImageURI(mPhotoUri);
+                                }
+                        case PICK_VIDEO_REQUEST:
+                                if (requestCode == PICK_VIDEO_REQUEST && resultCode == RESULT_OK) {
+                                        mVideoUri = data.getData();
+                                        mVideo_videoView.setVideoURI(mVideoUri);
+                                }
                 }
         }
 
         // Create new event
         private void newEvent() {
                 // Upload a file to storage with random name
-                if (mPhotoUri == null) {
+                if ((mPhotoUri == null) && (mVideoUri == null)){
                         // If the user does not pick photo, set "null" to "photo" on firebase
                         Event event = new Event();
                         event.setTitle(mTitle_editTxt.getText().toString());
                         event.setDate(mDate_viewTxt.getText().toString());
                         event.setMemo(mMemo_editTxt.getText().toString());
                         event.setPhoto("NONE");
-                        event.setVideo(mVideo_editTxt.getText().toString());
+                        event.setVideo("NONE");
                         event.setLocation(mLocation_editTxt.getText().toString());
                         event.setType(mType_sp.getSelectedItem().toString());
                         event.setShare(mShare_sp.getSelectedItem().toString());
@@ -249,22 +257,24 @@ public class NewEventActivity extends AppCompatActivity {
                         // If the user picks photo, set url to "photo" on firebase
                         final StorageReference PhotoRef = mStoragePhotoRef.child(System.currentTimeMillis() + "." +
                                 getFileExtension(mPhotoUri));
-                        PhotoRef.putFile(mPhotoUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                @Override
+
+                        PhotoRef.putFile(mPhotoUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>(){
+                                        @Override
                                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                         // Photo uploaded successfully
                                         // Get download url
-                                        PhotoRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                        PhotoRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>(){
                                                 @Override
                                                 public void onSuccess(Uri uri) {
                                                         photoUrl = uri.toString();
+
 
                                                         Event event = new Event();
                                                         event.setTitle(mTitle_editTxt.getText().toString());
                                                         event.setDate(mDate_viewTxt.getText().toString());
                                                         event.setMemo(mMemo_editTxt.getText().toString());
                                                         event.setPhoto(photoUrl);
-                                                        event.setVideo(mVideo_editTxt.getText().toString());
+                                                        event.setVideo(videoUrl);
                                                         event.setLocation(mLocation_editTxt.getText().toString());
                                                         event.setType(mType_sp.getSelectedItem().toString());
                                                         event.setShare(mShare_sp.getSelectedItem().toString());
@@ -319,18 +329,12 @@ public class NewEventActivity extends AppCompatActivity {
                 startActivityForResult(intent,1001);
         }
         // Choose Video
-        private void chooseVideo() {
+        public void chooseVideo() {
                 // Put data to Video Activity
-                Intent intent = new Intent(NewEventActivity.this, VideoActivity.class);
-                intent.putExtra("calling-activity",ActivityConstants.ACTIVITY_1);
-                intent.putExtra("title",mTitle_editTxt.getText().toString());
-                intent.putExtra("memo",mMemo_editTxt.getText().toString());
-                //intent.putExtra("photo",mPhotoUri.toString());
-                intent.putExtra("location",mLocation_editTxt.getText().toString());
-                intent.putExtra("date",mDate_viewTxt.getText().toString());
-                intent.putExtra("type",mType_sp.getSelectedItem().toString());
-                intent.putExtra("share",mShare_sp.getSelectedItem().toString());
-                startActivityForResult(intent,1001);
+                Intent i = new Intent();
+                i.setType("video/*");
+                i.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(i, "Select a Video"), PICK_VIDEO_REQUEST);
         }
         // Choose Location
         private void chooseLocation() {

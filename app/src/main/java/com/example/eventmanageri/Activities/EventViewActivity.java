@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +35,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 
 import java.text.DateFormat;
@@ -55,6 +57,8 @@ public class EventViewActivity extends AppCompatActivity {
     private Button mBtnUpdate, mBtnAddComment, mBtnRate;
     RecyclerView RvComment;
     CommentAdapter commentAdapter;
+    private MediaController mediaP;
+
 
 
     // Data reference
@@ -98,6 +102,8 @@ public class EventViewActivity extends AppCompatActivity {
         uDisplayName = mUser.getDisplayName();
         mDatabaseUserRef = mDatabase.getReference("users").child(uId);
 
+        mediaP = new MediaController(this);
+
 
         // <------------------------ Data ------------------------>
         // Get data from fragments (EventListFragment, EventSharedListFragment)
@@ -121,9 +127,11 @@ public class EventViewActivity extends AppCompatActivity {
         mMemo_viewTxt.setText(memo);
         mType_viewTxt.setText(type);
         mLocation_viewTxt.setText(location);
+
         if ((photo != "NONE") && (video != "NONE")) {
             // If there is photo, get image from url
             Picasso.get().load(photo).into(mPhoto_imgView);
+            //Picasso.get().load(video).fit().placeholder(R.mipmap.ic_launcher).into((Target) mVideo_View);
 
 
 
@@ -153,9 +161,6 @@ public class EventViewActivity extends AppCompatActivity {
                                     Toast.LENGTH_SHORT).show();
                         }
                     });
-
-                    Log.d("EventViewActivity", "rating bar value ssss : " + uid);
-                    Log.d("EventViewActivity", "rating bar value ssss : " + uname);
 
 
                     ratingDisplayTextView.setText("Your rating is:" + ratingRatingBar.getRating());
@@ -268,7 +273,7 @@ public class EventViewActivity extends AppCompatActivity {
                                 intent.putExtra("date",mDate_viewTxt.getText().toString());
                                 intent.putExtra("memo",mMemo_viewTxt.getText().toString());
                                 intent.putExtra("photo",photo);
-                                intent.putExtra("video",mVideo_viewTxt.getText().toString());
+                                intent.putExtra("video",video);
                                 intent.putExtra("location",mLocation_viewTxt.getText().toString());
                                 intent.putExtra("share",share);
                                 startActivity(intent);

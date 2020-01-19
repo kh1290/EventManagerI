@@ -4,8 +4,6 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
@@ -30,10 +28,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-
-
 import java.util.List;
-
 
 
 public class NewEventActivity extends AppCompatActivity {
@@ -116,7 +111,9 @@ public class NewEventActivity extends AppCompatActivity {
                 if (photo != null) {
                         mPhoto_imgView.setImageURI(Uri.parse(photo));
                 }
-
+                if (video != null) {
+                        mVideo_videoView.setVideoURI(Uri.parse(video));
+                }
                 mVideo_videoView.setMediaController(mediaC);
                 mediaC.setAnchorView(mVideo_videoView);
                 mVideo_videoView.start();
@@ -173,25 +170,21 @@ public class NewEventActivity extends AppCompatActivity {
         }
         // <------------------------ Function ------------------------>
 
-        //Video
-
-        /*public void playVideo(View v) {
-                String path = "android.resource://" + getPackageName() + "/" + R.raw.cloud;
-                Uri u = Uri.parse(path);
-
-                mVideo_videoView.setVideoURI(u);
-                mVideo_videoView.setMediaController(mediaC);
-                mediaC.setAnchorView(mVideo_videoView);
-                mVideo_videoView.start();
-                Log.d("NewEventActivity", "111111: " + mVideo_videoView);
-        }*/
-
         // Choose photo
         private void choosePhoto() {
                 Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(intent, PICK_Photo_Request);
+        }
+
+        // Choose Video
+        public void chooseVideo() {
+                // Put data to Video Activity
+                Intent i = new Intent();
+                i.setType("video/*");
+                i.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(i, "Select a Video"), PICK_VIDEO_REQUEST);
         }
 
         @Override
@@ -217,7 +210,7 @@ public class NewEventActivity extends AppCompatActivity {
         // Create new event
         private void newEvent() {
                 // Upload a file to storage with random name
-                if ((mPhotoUri == null) && (mVideoUri == null)){
+                if ((mPhotoUri == null) && (mVideoUri == null)) {
                         // If the user does not pick photo, set "null" to "photo" on firebase
                         Event event = new Event();
                         event.setTitle(mTitle_editTxt.getText().toString());
@@ -258,12 +251,12 @@ public class NewEventActivity extends AppCompatActivity {
                         final StorageReference PhotoRef = mStoragePhotoRef.child(System.currentTimeMillis() + "." +
                                 getFileExtension(mPhotoUri));
 
-                        PhotoRef.putFile(mPhotoUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>(){
-                                        @Override
+                        PhotoRef.putFile(mPhotoUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
                                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                         // Photo uploaded successfully
                                         // Get download url
-                                        PhotoRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>(){
+                                        PhotoRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                                 @Override
                                                 public void onSuccess(Uri uri) {
                                                         photoUrl = uri.toString();
@@ -307,7 +300,61 @@ public class NewEventActivity extends AppCompatActivity {
                                 }
                         });
                 }
-        }
+
+                        final StorageReference VideoRef = mStorageVideoRef.child(System.currentTimeMillis() + "." +
+                                getFileExtension(mVideoUri));
+
+                        VideoRef.putFile(mVideoUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>(){
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                        // Photo uploaded successfully
+                                        // Get download url
+                                        VideoRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>(){
+                                                @Override
+                                                public void onSuccess(Uri uri) {
+                                                        videoUrl = uri.toString();
+
+
+                                                        Event event = new Event();
+                                                        event.setTitle(mTitle_editTxt.getText().toString());
+                                                        event.setDate(mDate_viewTxt.getText().toString());
+                                                        event.setMemo(mMemo_editTxt.getText().toString());
+                                                        event.setPhoto(photoUrl);
+                                                        event.setVideo(videoUrl);
+                                                        event.setLocation(mLocation_editTxt.getText().toString());
+                                                        event.setType(mType_sp.getSelectedItem().toString());
+                                                        event.setShare(mShare_sp.getSelectedItem().toString());
+
+                                                        new Database().addEvent(event, new Database.DataStatus() {
+                                                                @Override
+                                                                public void DataIsLoaded(List<Event> events) { //, List<String> keys
+
+                                                                }
+
+                                                                @Override
+                                                                public void DataIsInserted() {
+
+                                                                        Toast.makeText(NewEventActivity.this, "The event has been " +
+                                                                                "saved successfully", Toast.LENGTH_LONG).show();
+                                                                }
+
+                                                                @Override
+                                                                public void DataIsUpdated() {
+
+                                                                }
+
+                                                                @Override
+                                                                public void DataIsDeleted() {
+
+                                                                }
+                                                        });
+                                                }
+                                        });
+                                }
+                        });
+                }
+
+
         private String getFileExtension(Uri uri) {
                 ContentResolver Cr = getContentResolver();
                 MimeTypeMap mime = MimeTypeMap.getSingleton();
@@ -328,14 +375,7 @@ public class NewEventActivity extends AppCompatActivity {
                 intent.putExtra("share",mShare_sp.getSelectedItem().toString());
                 startActivityForResult(intent,1001);
         }
-        // Choose Video
-        public void chooseVideo() {
-                // Put data to Video Activity
-                Intent i = new Intent();
-                i.setType("video/*");
-                i.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(i, "Select a Video"), PICK_VIDEO_REQUEST);
-        }
+
         // Choose Location
         private void chooseLocation() {
                 // Put data to Location Activity

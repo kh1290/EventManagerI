@@ -177,12 +177,14 @@ public class NewEventActivity extends AppCompatActivity {
                 intent.putExtra("calling-activity",ActivityConstants.ACTIVITY_1);
                 intent.putExtra("title",mTitle_editTxt.getText().toString());
                 intent.putExtra("memo",mMemo_editTxt.getText().toString());
-                intent.putExtra("video",mVideo_editTxt.getText().toString());
                 intent.putExtra("location",mLocation_editTxt.getText().toString());
                 intent.putExtra("type",mType_sp.getSelectedItem().toString());
                 intent.putExtra("share",mShare_sp.getSelectedItem().toString());
                 if (mPhotoUri != null) {
                         intent.putExtra("photo",mPhotoUri.toString());
+                }
+                if (mVideoUri != null) {
+                        intent.putExtra("video",mVideoUri.toString());
                 }
                 startActivityForResult(intent,1001);
         }
@@ -193,12 +195,14 @@ public class NewEventActivity extends AppCompatActivity {
                 intent.putExtra("calling-activity",ActivityConstants.ACTIVITY_1);
                 intent.putExtra("title",mTitle_editTxt.getText().toString());
                 intent.putExtra("memo",mMemo_editTxt.getText().toString());
-                intent.putExtra("video",mVideo_editTxt.getText().toString());
                 intent.putExtra("date",mDate_viewTxt.getText().toString());
                 intent.putExtra("type",mType_sp.getSelectedItem().toString());
                 intent.putExtra("share",mShare_sp.getSelectedItem().toString());
                 if (mPhotoUri != null) {
                         intent.putExtra("photo",mPhotoUri.toString());
+                }
+                if (mVideoUri != null) {
+                        intent.putExtra("video",mVideoUri.toString());
                 }
                 startActivityForResult(intent,1001);
         }
@@ -223,10 +227,10 @@ public class NewEventActivity extends AppCompatActivity {
         // Choose Video
         public void chooseVideo() {
                 // Put data to Video Activity
-                Intent i = new Intent();
-                i.setType("video/*");
-                i.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(i, "Select a Video"), PICK_VIDEO_REQUEST);
+                Intent intent = new Intent();
+                intent.setType("video/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select a Video"), PICK_VIDEO_REQUEST);
         }
         private String getFileExtension(Uri uri) {
                 ContentResolver Cr = getContentResolver();

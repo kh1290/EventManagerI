@@ -2,14 +2,17 @@ package com.example.eventmanageri.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.DatePickerDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -20,8 +23,8 @@ import com.example.eventmanageri.Database;
 import com.example.eventmanageri.Models.Event;
 import com.example.eventmanageri.R;
 
+import java.util.Calendar;
 import java.util.List;
-import com.example.eventmanageri.Activities.CalendarActivity.ActivityConstants;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -35,11 +38,12 @@ import com.squareup.picasso.Picasso;
 public class EventModActivity extends AppCompatActivity {
 
     // UI reference
-    private EditText mTitle_editTxt, mMemo_editTxt, mPhoto_editTxt, mVideo_editTxt, mLocation_editTxt;
+    private EditText mTitle_editTxt, mMemo_editTxt, mVideo_editTxt, mLocation_editTxt;
     private TextView mDate_viewTxt;
     private ImageView mPhoto_imgView;
     private Spinner mType_sp, mShare_sp;
-    private Button mBtnDate, mBtnUpPhoto, mBtnUpdate, mBtnDelete, mBtnCancel;
+    private DatePickerDialog.OnDateSetListener mDateSetListener;
+    private Button mBtnUpPhoto, mBtnUpdate, mBtnDelete, mBtnCancel;
 
     // Data reference
     private String key, userid, email, title, date, memo, type, photo, photoUrl, video, location, share, uDisplayName;
@@ -65,12 +69,10 @@ public class EventModActivity extends AppCompatActivity {
         mDate_viewTxt = (TextView) findViewById(R.id.date_viewTxt);
         mMemo_editTxt = (EditText) findViewById(R.id.memo_editTxt);
         mPhoto_imgView = (ImageView) findViewById(R.id.imageView3);
-        // mPhoto_editTxt = (EditText) findViewById(R.id.photo_editTxt);
         mVideo_editTxt = (EditText) findViewById(R.id.video_editTxt);
         mLocation_editTxt = (EditText) findViewById(R.id.location_editTxt);
         mType_sp = (Spinner) findViewById(R.id.type_sp);
         mShare_sp = (Spinner) findViewById(R.id.share_sp);
-        mBtnDate = (Button) findViewById(R.id.btnDate);
         mBtnUpPhoto = (Button) findViewById(R.id.btnUpPhoto);
         mBtnUpdate = (Button) findViewById(R.id.btnUpdate);
         mBtnDelete = (Button) findViewById(R.id.btnDelete);
@@ -78,8 +80,8 @@ public class EventModActivity extends AppCompatActivity {
 
         // Define firebase reference
         mDatabase = FirebaseDatabase.getInstance();
-        mDatabaseRef = mDatabase.getReference("events");
         mStorage = FirebaseStorage.getInstance();
+        mDatabaseRef = mDatabase.getReference("events");
         mStorageRef = mStorage.getReference("photo");
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         uDisplayName = mUser.getDisplayName();
@@ -111,16 +113,34 @@ public class EventModActivity extends AppCompatActivity {
             Picasso.get().load(photo).into(mPhoto_imgView);
         }
 
-
-        // <------------------------ Button ------------------------>
-        // "CHOOSE DATE" Button : Choose the date
-        mBtnDate.setOnClickListener(new View.OnClickListener() {
+        // <------------------------- Date ------------------------->
+        // "Date" TextView : Choose date
+        mDate_viewTxt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chooseDate();
+                Calendar cal = Calendar.getInstance();
+                int year = cal.get(Calendar.YEAR);
+                int month = cal.get(Calendar.MONTH);
+                int day = cal.get(Calendar.DAY_OF_MONTH);
+
+                DatePickerDialog dialog = new DatePickerDialog(
+                        EventModActivity.this,
+                        android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                        mDateSetListener,
+                        year,month,day);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
             }
         });
-
+        mDateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                month = month + 1;
+                String date = month + "/" + day + "/" + year;
+                mDate_viewTxt.setText(date);
+            }
+        };
+        // <------------------------ Button ------------------------>
         // "PHOTO" Button : Choose photo to upload
         mBtnUpPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -298,24 +318,6 @@ public class EventModActivity extends AppCompatActivity {
         ContentResolver Cr = getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(Cr.getType(uri));
-    }
-
-    // Choose Date
-    private void chooseDate() {
-        // Put data to CalendarActivity
-        Intent intent = new Intent(EventModActivity.this, CalendarActivity.class);
-        intent.putExtra("calling-activity",ActivityConstants.ACTIVITY_2);
-        intent.putExtra("key",key);
-        intent.putExtra("userid",userid);
-        intent.putExtra("email",uDisplayName);
-        intent.putExtra("title",mTitle_editTxt.getText().toString());
-        intent.putExtra("memo",mMemo_editTxt.getText().toString());
-        intent.putExtra("photo",photo);
-        intent.putExtra("video",mVideo_editTxt.getText().toString());
-        intent.putExtra("location",mLocation_editTxt.getText().toString());
-        intent.putExtra("type",mType_sp.getSelectedItem().toString());
-        intent.putExtra("share",mShare_sp.getSelectedItem().toString());
-        startActivity(intent);
     }
 
     // Get spinner value

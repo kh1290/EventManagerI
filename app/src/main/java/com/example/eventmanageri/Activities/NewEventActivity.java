@@ -1,12 +1,16 @@
 package com.example.eventmanageri.Activities;
 
+import android.app.DatePickerDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.MediaController;
@@ -17,7 +21,6 @@ import android.widget.VideoView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.eventmanageri.Activities.CalendarActivity.ActivityConstants;
 import com.example.eventmanageri.Database;
 import com.example.eventmanageri.Models.Event;
 import com.example.eventmanageri.R;
@@ -28,18 +31,20 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.util.Calendar;
 import java.util.List;
 
 
 public class NewEventActivity extends AppCompatActivity {
         // UI reference
-        private EditText mTitle_editTxt, mMemo_editTxt, mVideo_editTxt, mLocation_editTxt;
+        private EditText mTitle_editTxt, mMemo_editTxt, mLocation_editTxt;
         private TextView mDate_viewTxt;
         private ImageView mPhoto_imgView;
         private VideoView mVideo_videoView;
         private MediaController mediaC;
         private Spinner mType_sp, mShare_sp;
-        private Button mBtnDate, mBtnUpPhoto, mBtnUpVideo, mBtnAdd, mBtnCancel, mbtnUpLocation;
+        private DatePickerDialog.OnDateSetListener mDateSetListener;
+        private Button mBtnUpPhoto, mBtnUpVideo, mBtnAdd, mBtnCancel, mbtnUpLocation;
 
         // Data reference
         private String title, date, type, memo, photo, photoUrl, video, videoUrl, location, share;
@@ -66,18 +71,16 @@ public class NewEventActivity extends AppCompatActivity {
                 mDate_viewTxt = (TextView) findViewById(R.id.date_viewTxt);
                 mMemo_editTxt = (EditText) findViewById(R.id.memo_editTxt);
                 mPhoto_imgView = (ImageView) findViewById(R.id.photo_imgView);
-                mVideo_editTxt = (EditText) findViewById(R.id.video_editTxt);
                 mVideo_videoView = (VideoView) findViewById(R.id.video_videoView);
                 mLocation_editTxt = (EditText) findViewById(R.id.location_editTxt);
                 mType_sp = (Spinner) findViewById(R.id.type_sp);
                 mShare_sp = (Spinner) findViewById(R.id.share_sp);
-                mBtnDate = (Button) findViewById(R.id.btnDate);
                 mBtnUpPhoto = (Button) findViewById(R.id.btnUpPhoto);
                 mBtnUpVideo = (Button) findViewById(R.id.btnUpVideo);
                 mBtnAdd = (Button) findViewById(R.id.btnAdd);
                 mBtnCancel = (Button) findViewById(R.id.btnCancel);
-                mediaC = new MediaController(this);
                 mbtnUpLocation = (Button) findViewById(R.id.btnUpLocation);
+                mediaC = new MediaController(this);
 
                 // Define firebase reference
                 mDatabase = FirebaseDatabase.getInstance();
@@ -88,8 +91,7 @@ public class NewEventActivity extends AppCompatActivity {
 
 
                 // <------------------------ Data ------------------------>
-
-                // Get data from CalendarActivity
+                // Get data from LocationActivity
                 Intent intent = getIntent();
                 date = intent.getStringExtra("date");
                 title = intent.getStringExtra("title");
@@ -104,7 +106,6 @@ public class NewEventActivity extends AppCompatActivity {
                 mTitle_editTxt.setText(title);
                 mDate_viewTxt.setText(date);
                 mMemo_editTxt.setText(memo);
-                mVideo_editTxt.setText(video);
                 mLocation_editTxt.setText(location);
                 mType_sp.setSelection(getIndex_SpinnerItem(mType_sp, type));
                 mShare_sp.setSelection(getIndex_SpinnerItem(mShare_sp, share));
@@ -118,15 +119,35 @@ public class NewEventActivity extends AppCompatActivity {
                 mediaC.setAnchorView(mVideo_videoView);
                 mVideo_videoView.start();
 
-                // <------------------------ Button ------------------------>
-                // "CHOOSE DATE" Button : Choose the date
-                mBtnDate.setOnClickListener(new View.OnClickListener() {
+                // <------------------------- Date ------------------------->
+                // "Date" TextView : Choose date
+                mDate_viewTxt.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                                chooseDate();
+                                Calendar cal = Calendar.getInstance();
+                                int year = cal.get(Calendar.YEAR);
+                                int month = cal.get(Calendar.MONTH);
+                                int day = cal.get(Calendar.DAY_OF_MONTH);
+
+                                DatePickerDialog dialog = new DatePickerDialog(
+                                        NewEventActivity.this,
+                                        android.R.style.Theme_Holo_Light_Dialog_MinWidth,
+                                        mDateSetListener,
+                                        year,month,day);
+                                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                dialog.show();
                         }
                 });
+                mDateSetListener = new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                                month = month + 1;
+                                String date = month + "/" + day + "/" + year;
+                                mDate_viewTxt.setText(date);
+                        }
+                };
 
+                // <------------------------ Button ------------------------>
                 // "PHOTO" Button : Choose photo to upload
                 mBtnUpPhoto.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -170,29 +191,11 @@ public class NewEventActivity extends AppCompatActivity {
         }
         // <------------------------ Function ------------------------>
         // <---------------------- Obtain Data ----------------------->
-        // Choose Date
-        private void chooseDate() {
-                // Put data to CalendarActivity
-                Intent intent = new Intent(NewEventActivity.this, CalendarActivity.class);
-                intent.putExtra("calling-activity",ActivityConstants.ACTIVITY_1);
-                intent.putExtra("title",mTitle_editTxt.getText().toString());
-                intent.putExtra("memo",mMemo_editTxt.getText().toString());
-                intent.putExtra("location",mLocation_editTxt.getText().toString());
-                intent.putExtra("type",mType_sp.getSelectedItem().toString());
-                intent.putExtra("share",mShare_sp.getSelectedItem().toString());
-                if (mPhotoUri != null) {
-                        intent.putExtra("photo",mPhotoUri.toString());
-                }
-                if (mVideoUri != null) {
-                        intent.putExtra("video",mVideoUri.toString());
-                }
-                startActivityForResult(intent,1001);
-        }
         // Choose Location
         private void chooseLocation() {
                 // Put data to Location Activity
                 Intent intent = new Intent(NewEventActivity.this, LocationActivity.class);
-                intent.putExtra("calling-activity",ActivityConstants.ACTIVITY_1);
+                intent.putExtra("calling-activity", LocationActivity.ActivityConstants.ACTIVITY_1);
                 intent.putExtra("title",mTitle_editTxt.getText().toString());
                 intent.putExtra("memo",mMemo_editTxt.getText().toString());
                 intent.putExtra("date",mDate_viewTxt.getText().toString());
